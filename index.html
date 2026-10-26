@@ -63,6 +63,10 @@ nav.tabs .wrap { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: non
 .tab { font: inherit; font-weight: 500; color: var(--muted); background: none; border: 0; border-bottom: 2px solid transparent; padding: 12px 12px 10px; cursor: pointer; white-space: nowrap; display: flex; gap: 8px; align-items: center; }
 .tab:hover { color: var(--ink); }
 .tab[aria-current="true"] { color: var(--ink); border-bottom-color: var(--grana); }
+.tab.locked { opacity: .45; cursor: not-allowed; }
+.next-row { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.next-row .next-msg { color: var(--muted); font-size: 15px; }
+button.btn:disabled { opacity: .5; cursor: not-allowed; }
 .tab .count { font-size: 13px; font-variant-numeric: tabular-nums; background: var(--surface); border: 1px solid var(--line); border-radius: 99px; padding: 0 7px; color: var(--muted); }
 .tab .count.full { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
 
@@ -511,6 +515,10 @@ function tokens(line) {
   return line.split(" ").map(t => { const m = t.match(/^([¡¿«"]*)(.*?)([.,;:!?…»"]*)$/); return { pre: m[1], w: m[2], post: m[3] }; });
 }
 const isDone = q => !!(S.r[q.id] && S.r[q.id].done);
+/* una pregunta cuenta como respondida si se guardó o, en las que se corrigen solas, si se intentó al menos una vez */
+const answered = q => { const s = S.r[q.id]; return !!s && (!!s.done || (["opcion", "numero", "rima", "silabas", "acentos", "acepcion", "corta"].includes(q.tipo) && s.intentos > 0)); };
+const pendientes = i => UNIDAD.partes[i].preguntas.filter(q => !answered(q)).length;
+const unlocked = i => { for (let k = 0; k < Math.min(i, N_PARTES); k++) if (pendientes(k)) return false; return true; };
 const AUTO = ["opcion", "numero", "rima", "silabas", "acentos", "acepcion", "corta"];
 function sortKeys(ks) { return ks.slice().sort((a, b) => { const [la, wa] = a.split("-").map(Number), [lb, wb] = b.split("-").map(Number); return la - lb || wa - wb; }); }
 function tokWord(k) { const [l, w] = k.split("-").map(Number); return tokens(VERSOS[l - 1])[w].w; }
@@ -582,10 +590,11 @@ correo.addEventListener("input", () => { S.correo = correo.value; save(); if (S.
 /* ---------- pestañas ---------- */
 function renderTabs() {
   const items = UNIDAD.partes.map((p, i) => {
-    const done = p.preguntas.filter(isDone).length, tot = p.preguntas.length;
-    return `<button class="tab" data-act="nav" data-i="${i}" aria-current="${S.sec === i}">${i + 1}. ${esc(p.nombre)} <span class="count ${done === tot ? "full" : ""}">${done}/${tot}</span></button>`;
+    const done = p.preguntas.filter(answered).length, tot = p.preguntas.length, lk = !unlocked(i);
+    return `<button class="tab ${lk ? "locked" : ""}" data-act="nav" data-i="${i}" aria-current="${S.sec === i}" ${lk ? 'aria-disabled="true" title="Responde primero las partes anteriores"' : ""}>${i + 1}. ${esc(p.nombre)} <span class="count ${done === tot ? "full" : ""}">${done}/${tot}</span></button>`;
   });
-  items.push(`<button class="tab" data-act="nav" data-i="${N_PARTES}" aria-current="${S.sec === N_PARTES}">Entrega</button>`);
+  const lkE = !unlocked(N_PARTES);
+  items.push(`<button class="tab ${lkE ? "locked" : ""}" data-act="nav" data-i="${N_PARTES}" aria-current="${S.sec === N_PARTES}" ${lkE ? 'aria-disabled="true" title="Responde todas las preguntas para entregar"' : ""}>Entrega</button>`);
   document.getElementById("tabs").innerHTML = items.join("");
 }
 
@@ -794,7 +803,7 @@ function diag(q, s) {
 function rerender(id) {
   const el = document.getElementById("q-" + id);
   if (el) el.outerHTML = renderQ(QS[id]);
-  renderTabs();
+  renderTabs(); renderNext();
 }
 function schemeNorm(arr) {
   const map = {}; let next = 0;
@@ -821,7 +830,7 @@ function check(q) {
       if (!c) { s.msg = "Elige una acepción."; return; }
       s.sel = +c.value; s.intentos = (s.intentos || 0) + 1; s.ok = s.sel === q.correcta; s.done = s.ok || s.intentos >= 2;
     } else {
-      if ((s.texto || "").trim().length < 5) { s.msg = "Copia la definición."; return; }
+      if (!(s.texto || "").trim()) { s.msg = "Escribe algo antes de comprobar."; return; }
       s.intentos = (s.intentos || 0) + 1; s.ok = simil(s.texto, q.acepcion) >= 0.75; s.done = s.ok || s.intentos >= 3;
     }
   } else if (q.tipo === "silabas") {
@@ -830,15 +839,15 @@ function check(q) {
     s.intentos = (s.intentos || 0) + 1; s.ok = sol.length === b.length && sol.every(x => b.includes(x)); s.done = s.ok || s.intentos >= 3;
   } else if (q.tipo === "acentos") {
     const sel = s.sel || [];
-    if (!sel.length || !s.tipo) { s.msg = "Marca las sílabas acentuadas y elige el tipo."; return; }
+    if (!sel.length && !s.tipo) { s.msg = "Marca alguna sílaba o elige un tipo antes de comprobar."; return; }
     const opt = q.opcionales || [];
     s.intentos = (s.intentos || 0) + 1;
     s.ok = q.tonicas.every(x => sel.includes(x)) && sel.every(x => q.tonicas.includes(x) || opt.includes(x)) && s.tipo === q.tipoCorrecto;
     s.done = s.ok || s.intentos >= 3;
   } else if (q.tipo === "rima") {
     const letras = s.letras || [];
-    if (VERSOS.some((_, i) => !letras[i])) { s.msg = "Asigna una letra a los 14 versos."; return; }
-    const n = schemeNorm(letras);
+    if (!letras.some(Boolean)) { s.msg = "Asigna al menos una letra antes de comprobar."; return; }
+    const n = schemeNorm(VERSOS.map((_, i) => letras[i] || ""));
     s.res = n.map((l, i) => l === q.correcta[i]);
     s.intentos = (s.intentos || 0) + 1; s.ok = s.res.every(Boolean); s.done = s.ok || s.intentos >= 3;
   }
@@ -846,12 +855,12 @@ function check(q) {
 function saveOpen(q) {
   const s = st(q.id); s.msg = "";
   if (q.tipo === "abierta") {
-    if ((s.texto || "").trim().length < 20) { s.msg = "Escribe una respuesta más completa antes de guardar."; return; }
+    if (!(s.texto || "").trim()) { s.msg = "Escribe algo antes de guardar."; return; }
   } else if (q.tipo === "diccionario") {
     const it = s.items || {};
     if (q.palabras.some((_, i) => !(it[i] && (it[i].def || "").trim() && (it[i].sen || "").trim()))) { s.msg = "Completa los dos campos de cada palabra."; return; }
   } else if (q.tipo === "acepcion") {
-    if ((s.texto || "").trim().length < 10) { s.msg = "Escribe qué significa la palabra en el verso."; return; }
+    if (!(s.texto || "").trim()) { s.msg = "Escribe algo antes de guardar."; return; }
   } else if (q.tipo === "seleccion") {
     if (!Object.keys(s.marcadas || {}).length) { s.msg = "Marca al menos una palabra."; return; }
   } else if (q.tipo === "marcar") {
@@ -872,13 +881,14 @@ function renderPart() {
     ${p.requiere && !isDone(QS[p.requiere])
       ? `<div class="fb info"><p>Primero decide qué palabras hay que buscar: completa la pregunta ${QS[p.requiere].n} de «${esc(UNIDAD.partes[QS[p.requiere].parte].nombre)}».</p><p><button class="btn ghost" data-act="nav" data-i="${QS[p.requiere].parte}">Ir a esa pregunta</button></p></div>`
       : p.preguntas.map(renderQ).join("")}
-    <button class="btn ghost next" data-act="nav" data-i="${S.sec + 1}">${S.sec + 1 < N_PARTES ? "Siguiente: " + esc(UNIDAD.partes[S.sec + 1].nombre) : "Ir a la entrega"} →</button>`;
+    <div class="next-row" id="nextRow"></div>`;
+  renderNext();
 }
 
 function stats() {
   const all = Object.values(QS), auto = all.filter(q => AUTO.includes(q.tipo));
   return {
-    total: all.length, hechas: all.filter(isDone).length,
+    total: all.length, hechas: all.filter(answered).length,
     auto: auto.length, primera: auto.filter(q => { const s = S.r[q.id]; return s && s.ok && s.intentos === 1; }).length,
     finalOk: auto.filter(q => { const s = S.r[q.id]; return s && s.ok; }).length
   };
@@ -897,12 +907,12 @@ function buildReport() {
     p.preguntas.forEach(q => {
       const s = S.r[q.id] || {};
       L.push("", `${q.n}. ${strip(q.enunciado)}`);
-      if (!s.done) { L.push("   (sin responder)"); return; }
+      if (!answered(q)) { L.push("   (sin responder)"); return; }
       if (q.tipo === "opcion") L.push(`   → ${strip(q.opciones[s.sel])}`);
       else if (q.tipo === "silabas") L.push(`   → ${divText(VERSOS[q.verso - 1], new Set(s.b))}`);
       else if (q.tipo === "acentos") L.push(`   → sílabas ${[...s.sel].sort((x, y) => x - y).join(", ")}; ${s.tipo}`);
       else if (q.tipo === "numero") L.push(`   → ${s.val}`);
-      else if (q.tipo === "rima") L.push(`   → ${schemeNorm(s.letras).join("")}`);
+      else if (q.tipo === "rima") L.push(`   → ${schemeNorm(VERSOS.map((_, i) => (s.letras || [])[i] || "")).map(l => l || "_").join("")}`);
       else if (q.tipo === "abierta") L.push("   " + (s.texto || "").trim().replace(/\n/g, "\n   "));
       else if (q.tipo === "diccionario") q.palabras.forEach((w, i) => { const v = (s.items || {})[i] || {}; L.push(`   · ${w.forma} (v. ${w.verso})`, `     Autoridades: ${(v.def || "").trim()}`, `     En el verso: ${(v.sen || "").trim()}`); });
       else if (q.tipo === "seleccion") { const r = seleccionRes(q, s.marcadas); L.push(`   Marcó: ${sortKeys(Object.keys(s.marcadas || {})).map(tokWord).join(", ")}`, `   Encontró ${r.found.length} de ${q.terminos.length}. Faltaron: ${r.missed.map(t => t.forma).join(", ") || "ninguna"}`); }
@@ -918,7 +928,7 @@ function buildReport() {
 function renderReport() { const r = document.getElementById("report"); if (r) r.value = buildReport(); const w = document.getElementById("nameWarn"); if (w) w.hidden = !!S.nombre.trim() && correoValido(S.correo); const st2 = document.getElementById("sendTo"); if (st2) st2.textContent = (S.correo || "").trim() || "tu correo"; }
 function renderEntrega(el) {
   const t = stats();
-  const rows = UNIDAD.partes.map((p, i) => { const d = p.preguntas.filter(isDone).length, tot = p.preguntas.length;
+  const rows = UNIDAD.partes.map((p, i) => { const d = p.preguntas.filter(answered).length, tot = p.preguntas.length;
     return `<tr><td>${i + 1}. ${esc(p.nombre)}</td><td>${d}/${tot}</td><td><span class="pill ${d === tot ? "ok" : "pend"}">${d === tot ? "Completa" : "Pendiente"}</span></td></tr>`; }).join("");
   const envio = ENVIO_URL ? `
     <section class="send" aria-labelledby="sendTitle">
@@ -946,17 +956,24 @@ function renderEntrega(el) {
   renderReport();
 }
 
-function render() { renderTabs(); renderPart(); }
+function renderNext() {
+  const el = document.getElementById("nextRow"); if (!el || S.sec >= N_PARTES) return;
+  const faltan = pendientes(S.sec);
+  const label = S.sec + 1 < N_PARTES ? "Siguiente: " + esc(UNIDAD.partes[S.sec + 1].nombre) : "Ir a la entrega";
+  el.innerHTML = `<button class="btn ${faltan ? "ghost" : ""} next" data-act="nav" data-i="${S.sec + 1}" ${faltan ? "disabled" : ""}>${label} →</button>`
+    + (faltan ? `<span class="next-msg">Para continuar, responde ${faltan === 1 ? "la pregunta que falta" : "las " + faltan + " preguntas que faltan"} en esta parte. Cualquier respuesta cuenta.</span>` : "");
+}
+function render() { if (!unlocked(S.sec)) S.sec = 0; renderTabs(); renderPart(); }
 
 /* ---------- eventos ---------- */
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-act]"); if (!b) return;
   const act = b.dataset.act, q = QS[b.dataset.q];
-  if (act === "nav") { S.sec = Math.min(+b.dataset.i, N_PARTES); save(); render(); document.getElementById("part").scrollIntoView({ block: "start" }); window.scrollTo({ top: 0 }); }
+  if (act === "nav") { const to = Math.min(+b.dataset.i, N_PARTES); if (!unlocked(to)) return; S.sec = to; save(); render(); document.getElementById("part").scrollIntoView({ block: "start" }); window.scrollTo({ top: 0 }); }
   else if (act === "check") { check(q); save(); rerender(q.id); }
   else if (act === "ideas") {
     const s = st(q.id);
-    if ((s.texto || "").trim().length < 20) s.msg = "Escribe una respuesta más completa antes de revisarla.";
+    if (!(s.texto || "").trim()) s.msg = "Escribe algo antes de revisar.";
     else { s.msg = ""; s.revisado = s.texto; }
     save(); rerender(q.id);
   }

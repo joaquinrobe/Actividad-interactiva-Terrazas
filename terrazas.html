@@ -1,0 +1,1145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Actividad interactiva - Terrazas</title>
+<meta property="og:title" content="Actividad interactiva - Terrazas">
+<meta property="og:description" content="Literatura novohispana · Bloque III: Lírica · Francisco de Terrazas, «Soñé que de una peña me arrojaba»">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: cabecera con datos del alumno, pestañas por parte de la unidad; columna de trabajo + soneto fijo al lado (arriba y plegable en el teléfono). */
+:root {
+  --paper: #F3F4F1;
+  --surface: #FFFFFF;
+  --ink: #1E2230;
+  --muted: #5B6070;
+  --line: #D8DAD4;
+  --grana: #A3203A;      /* grana cochinilla */
+  --grana-soft: #F6E4E7;
+  --ok: #2B7A4B;
+  --ok-soft: #E2F1E7;
+  --bad: #AF4229;
+  --bad-soft: #F8E5DF;
+  --syl-a: #F6E4E7;
+  --syl-b: #E3E8F1;
+  --f-display: "IM Fell English", "Iowan Old Style", Georgia, serif;
+  --f-read: "Literata", "Iowan Old Style", Georgia, serif;
+  --f-ui: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14161D; --surface: #1C1F28; --ink: #E8E7E2; --muted: #A2A6B2; --line: #2F3341;
+    --grana: #E46A80; --grana-soft: #3A1F27; --ok: #6CC290; --ok-soft: #1C3327; --bad: #E78C73; --bad-soft: #3B251F; --syl-a: #3A1F27; --syl-b: #22293A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14161D; --surface: #1C1F28; --ink: #E8E7E2; --muted: #A2A6B2; --line: #2F3341;
+  --grana: #E46A80; --grana-soft: #3A1F27; --ok: #6CC290; --ok-soft: #1C3327; --bad: #E78C73; --bad-soft: #3B251F; --syl-a: #3A1F27; --syl-b: #22293A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-ui); font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+header.top { border-bottom: 1px solid var(--line); background: var(--surface); }
+header.top .wrap { padding-block: 22px 18px; display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: flex-end; justify-content: space-between; }
+.eyebrow { font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--grana); font-weight: 600; margin: 0 0 4px; }
+h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(30px, 4.5vw, 42px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h1 em { font-style: italic; }
+.byline { color: var(--muted); margin: 6px 0 0; }
+.course { color: var(--muted); font-size: 15px; margin: 2px 0 0; }
+.student { display: flex; flex-wrap: wrap; gap: 10px; }
+.student label { display: flex; flex-direction: column; font-size: 14px; color: var(--muted); font-weight: 500; gap: 3px; }
+.student input { font: inherit; font-size: 17px; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px; width: 240px; max-width: 100%; }
+.student label.small input { width: 110px; }
+
+nav.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+nav.tabs .wrap { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.tab { font: inherit; font-weight: 500; color: var(--muted); background: none; border: 0; border-bottom: 2px solid transparent; padding: 12px 12px 10px; cursor: pointer; white-space: nowrap; display: flex; gap: 8px; align-items: center; }
+.tab:hover { color: var(--ink); }
+.tab[aria-current="true"] { color: var(--ink); border-bottom-color: var(--grana); }
+.locked-q { opacity: .6; }
+.locked-q .locked-msg { margin: 0; color: var(--muted); font-size: 15px; }
+.tab.locked { opacity: .45; cursor: not-allowed; }
+.next-row { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.next-row .next-msg { color: var(--muted); font-size: 15px; }
+button.btn:disabled { opacity: .5; cursor: not-allowed; }
+.tab .count { font-size: 13px; font-variant-numeric: tabular-nums; background: var(--surface); border: 1px solid var(--line); border-radius: 99px; padding: 0 7px; color: var(--muted); }
+.tab .count.full { background: var(--ok-soft); border-color: transparent; color: var(--ok); }
+
+main .wrap { display: grid; grid-template-columns: minmax(0, 1fr) 450px; gap: 32px; padding-block: 28px 64px; align-items: start; }
+@media (max-width: 900px) { main .wrap { grid-template-columns: minmax(0, 1fr); } aside.poem-side { order: -1; } }
+
+aside.poem-side { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 64px); }
+@media (max-width: 900px) { aside.poem-side { position: static; } }
+.poem-card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.poem-card summary { cursor: pointer; padding: 12px 16px; font-weight: 600; font-size: 15px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); list-style: none; display: flex; justify-content: space-between; }
+.poem-card summary::-webkit-details-marker { display: none; }
+.poem-card summary::after { content: "Mostrar"; text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--grana); }
+.poem-card[open] summary::after { content: "Ocultar"; }
+.poem-body { padding: 0 16px 16px; }
+@media (min-width: 901px) { .poem-body { max-height: calc(100vh - 150px); overflow-y: auto; } }
+.poem-title { font-family: var(--f-display); font-size: 25px; text-align: center; margin: 4px 0 12px; }
+.poem { font-family: var(--f-read); font-size: clamp(14px, 4vw, 17px); line-height: 1.6; margin: 0; overflow-x: auto; }
+.vl span:last-child { white-space: nowrap; }
+.stanza { margin: 0 0 12px; }
+.vl { display: grid; grid-template-columns: 22px 1fr; gap: 6px; }
+.vn { font-family: var(--f-ui); font-size: 12px; color: var(--muted); text-align: right; padding-top: 5px; font-variant-numeric: tabular-nums; }
+.notas { border-top: 1px solid var(--line); margin-top: 6px; padding-top: 10px; font-size: 14px; line-height: 1.45; }
+.notas-t { margin: 0 0 6px; font-weight: 600; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.notas dl { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.notas dt { font-weight: 600; }
+.notas dd { margin: 0; color: var(--muted); }
+.ref { font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; margin: 6px 0 0; line-height: 1.45; }
+.ref .sc { font-variant: small-caps; letter-spacing: .03em; }
+
+section.part { min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+.part-head h2 { font-family: var(--f-display); font-weight: 400; font-size: 34px; margin: 0; line-height: 1.15; }
+.part-head .lead { font-family: var(--f-read); color: var(--muted); margin: 8px 0 0; max-width: 64ch; }
+.reading { font-family: var(--f-read); font-size: 18px; line-height: 1.7; max-width: 66ch; }
+.reading h3 { font-family: var(--f-ui); font-size: 15px; letter-spacing: .07em; text-transform: uppercase; color: var(--grana); margin: 22px 0 6px; }
+.reading p { margin: 0 0 12px; }
+.reading ul { margin: 0 0 12px; padding-left: 20px; }
+.reading li { margin-bottom: 6px; }
+.reading figure.obra { margin: 20px 0 8px; max-width: 420px; }
+.reading figure.obra img { display: block; width: 100%; height: auto; border-radius: 4px; border: 1px solid var(--line); }
+.reading figure.obra figcaption { font-family: var(--f-ui); font-size: 14px; line-height: 1.45; color: var(--muted); margin-top: 8px; }
+.reading blockquote { margin: 8px 0 14px; padding-left: 14px; border-left: 2px solid var(--grana); font-style: italic; }
+
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+.q.done { border-color: color-mix(in srgb, var(--ok) 35%, var(--line)); }
+.q-head { display: flex; gap: 12px; align-items: baseline; }
+.q-num { font-family: var(--f-display); font-size: 23px; color: var(--grana); min-width: 22px; }
+.q-head p { margin: 0; font-family: var(--f-read); font-size: 18px; }
+.q-head .tag { margin-left: auto; font-size: 13px; color: var(--muted); white-space: nowrap; }
+.verse-quote { font-family: var(--f-read); font-style: italic; background: var(--paper); border-radius: 6px; padding: 10px 14px; margin: 0; }
+.opts { display: flex; flex-direction: column; gap: 6px; }
+.opt { display: flex; gap: 10px; align-items: flex-start; padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
+.opt:hover { border-color: var(--muted); }
+.opt input { margin-top: 4px; accent-color: var(--grana); }
+.opt.right { background: var(--ok-soft); border-color: transparent; }
+.opt.wrong { background: var(--bad-soft); border-color: transparent; }
+.opt.locked { cursor: default; }
+
+textarea, input.num, select { font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+textarea { width: 100%; min-height: 96px; resize: vertical; font-family: var(--f-read); font-size: 17px; line-height: 1.55; }
+textarea[readonly] { background: transparent; border-style: dashed; }
+input.txt { font: inherit; font-family: var(--f-read); font-size: 17px; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: 100%; max-width: 360px; }
+input.txt[readonly] { background: transparent; border-style: dashed; }
+input.num { width: 80px; font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--grana); outline-offset: 2px; }
+
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button.btn { font: inherit; font-weight: 600; font-size: 16px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); border-radius: 6px; padding: 8px 16px; cursor: pointer; }
+button.btn:hover { opacity: .88; }
+button.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+button.btn.danger { background: var(--bad); border-color: var(--bad); color: #fff; }
+
+.fb { border-radius: 6px; padding: 10px 14px; font-size: 16px; }
+.fb p { margin: 0 0 6px; } .fb p:last-child { margin: 0; }
+.fb.ok { background: var(--ok-soft); }
+.fb.bad { background: var(--bad-soft); }
+.fb.info { background: var(--paper); border: 1px solid var(--line); }
+.fb strong { font-weight: 600; }
+.fb .label { font-size: 13px; letter-spacing: .07em; text-transform: uppercase; font-weight: 700; color: var(--grana); display: block; margin-bottom: 4px; }
+.fb .model { font-family: var(--f-read); }
+.syl { font-family: var(--f-read); letter-spacing: .02em; }
+
+.rhyme { display: grid; grid-template-columns: 24px minmax(0, 1fr) 64px 20px; gap: 6px 10px; align-items: center; font-family: var(--f-read); }
+.rhyme .vn { padding: 0; }
+.rhyme .gap { grid-column: 1 / -1; height: 6px; }
+.rhyme mark { background: var(--grana-soft); color: inherit; border-radius: 3px; padding: 0 2px; }
+.rhyme select { padding: 4px 6px; }
+.rhyme .mk { font-size: 15px; font-family: var(--f-ui); }
+.mk.y { color: var(--ok); } .mk.n { color: var(--bad); }
+
+.pick { font-family: var(--f-read); font-size: 18px; line-height: 2; background: var(--paper); border-radius: 6px; padding: 12px 14px; }
+.pick .stanza { margin-bottom: 10px; }
+.tok { font: inherit; background: none; border: 0; padding: 0 2px; margin: 0 -2px; position: relative; border-radius: 3px; color: var(--ink); cursor: pointer; }
+.tok:hover { background: var(--grana-soft); }
+.tok-dado { padding: 0 2px; margin: 0 -2px; border-radius: 3px; background: var(--syl-b); font-weight: 600; cursor: default; }
+.vn-inline { display: inline-block; width: 26px; font-family: var(--f-ui); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tok-nota { padding: 0 2px; margin: 0 -2px; border-radius: 3px; background: var(--paper); text-decoration: underline dotted var(--muted); text-underline-offset: 4px; color: var(--muted); cursor: help; }
+.pick .tok-nota { background: var(--line); }
+.leyenda { margin: 0; font-size: 15px; color: var(--muted); }
+.leyenda .tok-nota { background: var(--line); }
+.tok.on { background: var(--grana); color: #fff; }
+.tok:disabled { cursor: default; }
+.notes { display: flex; flex-direction: column; gap: 10px; }
+.note label { font-weight: 600; font-size: 16px; display: block; margin-bottom: 4px; }
+.note label span { color: var(--muted); font-weight: 400; }
+.note textarea { min-height: 60px; }
+
+.opt .def { font-family: var(--f-read); }
+.dict { display: flex; flex-direction: column; gap: 14px; }
+.dict-item { border-top: 1px solid var(--line); padding-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 14px; }
+.dict-item h4 { grid-column: 1 / -1; margin: 0; font-family: var(--f-read); font-size: 18px; font-weight: 600; }
+.dict-item h4 span { font-family: var(--f-ui); font-weight: 400; font-size: 15px; color: var(--muted); }
+.dict-item label { font-size: 14px; color: var(--muted); font-weight: 500; display: flex; flex-direction: column; gap: 3px; }
+.dict-item textarea { min-height: 70px; }
+@media (max-width: 560px) { .dict-item { grid-template-columns: minmax(0, 1fr); } }
+a { color: var(--grana); }
+.aviso { background: var(--surface); border: 1px solid var(--grana); border-radius: 8px; padding: 14px 18px; font-family: var(--f-read); font-size: 17px; max-width: 66ch; }
+.poema-nota { font-size: 14px; color: var(--muted); margin: 0 0 8px; font-style: italic; }
+.video-link .doc { width: 36px; height: 44px; border-radius: 3px; background: var(--grana); position: relative; flex: none; }
+.video-link .doc::after { content: ""; position: absolute; left: 8px; right: 8px; top: 12px; height: 2px; background: #fff; box-shadow: 0 7px 0 #fff, 0 14px 0 #fff; }
+.extra { background: var(--grana-soft); border-radius: 10px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; }
+.extra .extra-eyebrow { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--grana); }
+.extra h3 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 26px; line-height: 1.15; }
+.extra p { margin: 0; font-family: var(--f-read); font-size: 17px; max-width: 62ch; }
+.extra .video { position: relative; width: 100%; max-width: 640px; aspect-ratio: 16 / 9; border-radius: 6px; overflow: hidden; background: #000; }
+.extra .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-link { display: flex; gap: 14px; align-items: center; align-self: flex-start; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 18px 12px 12px; color: var(--ink); text-decoration: none; }
+.video-link:hover { border-color: var(--grana); }
+.video-link .play { width: 44px; height: 44px; border-radius: 50%; background: var(--grana); position: relative; flex: none; }
+.video-link .play::after { content: ""; position: absolute; left: 17px; top: 13px; border-left: 14px solid #fff; border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
+.ideas ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.ideas li { padding-left: 22px; position: relative; }
+.ideas li::before { position: absolute; left: 0; font-weight: 700; }
+.ideas li.si::before { content: "✓"; color: var(--ok); }
+.ideas li.no::before { content: "→"; color: var(--grana); }
+
+.syl-line { font-family: var(--f-read); font-size: 28px; line-height: 1.5; background: var(--paper); border-radius: 6px; padding: 26px 14px 12px; display: flex; flex-wrap: wrap; row-gap: 22px; }
+.syl-line .w { white-space: nowrap; display: inline-flex; }
+.syl-line .sp { white-space: pre; }
+.ch { font: inherit; color: var(--ink); background: none; border: 0; margin: 0; padding: 0 1px; cursor: pointer; position: relative; border-radius: 0; }
+.ch:not(:disabled):hover { outline: 1px solid var(--grana); outline-offset: -1px; }
+.ch:disabled { cursor: default; }
+.ch.a, .sp.a { background: var(--syl-a); }
+.ch.b, .sp.b { background: var(--syl-b); }
+.ch.start { box-shadow: inset 2px 0 0 var(--grana); }
+.ch.start::before { content: attr(data-n); position: absolute; top: -1.35em; left: 1px; font: 600 13px/1 var(--f-ui); color: var(--grana); }
+.pu { color: var(--muted); }
+.syl-count { margin: 0; font-size: 16px; color: var(--muted); }
+.syl-count strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.acc-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.acc { font: inherit; font-family: var(--f-read); font-size: 21px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px 4px; min-width: 44px; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+.acc small { font: 500 13px var(--f-ui); color: var(--muted); font-variant-numeric: tabular-nums; }
+.acc.on { background: var(--grana); border-color: var(--grana); color: #fff; }
+.acc.on small { color: #fff; }
+.acc:disabled { cursor: default; }
+
+.next { align-self: flex-start; }
+.summary { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.summary td, .summary th { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.summary th { font-size: 14px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+.pill { font-size: 14px; border-radius: 99px; padding: 2px 9px; font-weight: 600; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.pend { background: var(--grana-soft); color: var(--grana); }
+.send { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+.send h3, .steps-title { margin: 0; font-size: 18px; }
+.send p { margin: 0; }
+.steps { margin: 0; padding-left: 20px; font-family: var(--f-read); }
+.steps li { margin-bottom: 6px; }
+textarea.report { min-height: 260px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 14px; }
+.confirm { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+@media (prefers-reduced-motion: no-preference) { .q { transition: border-color .2s; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow" id="eyebrow"></p>
+      <h1 id="title"></h1>
+      <p class="byline" id="byline"></p>
+      <p class="course" id="course"></p>
+    </div>
+    <div class="student">
+      <label for="nombre">Nombre completo<input id="nombre" autocomplete="name" placeholder="Escribe tu nombre"></label>
+      <label for="correo">Correo<input id="correo" type="email" autocomplete="email" inputmode="email" placeholder="tu@correo.com"></label>
+    </div>
+  </div>
+</header>
+<nav class="tabs" aria-label="Partes de la unidad"><div class="wrap" id="tabs"></div></nav>
+<main>
+  <div class="wrap">
+    <section class="part" id="part"></section>
+    <aside class="poem-side">
+      <details class="poem-card" id="poemCard">
+        <summary>El poema</summary>
+        <div class="poem-body" id="poemBody"></div>
+      </details>
+    </aside>
+  </div>
+</main>
+
+<script>
+/* ================================================================
+   UNIDAD DIDÁCTICA. Para crear otra unidad basta con copiar este
+   objeto y cambiar el poema, la referencia y las preguntas.
+   Tipos de pregunta: opcion, numero, rima, abierta, diccionario, marcar.
+   ================================================================ */
+const UNIDAD = {
+  id: "terrazas-sone-peña",
+  pagina: "Actividad interactiva - Terrazas",
+  vistaPrevia: "Literatura novohispana · Bloque III: Lírica · Francisco de Terrazas, «Soñé que de una peña me arrojaba»",
+  programa: "Licenciatura en Letras Hispánicas",
+  curso: "Literatura novohispana",
+  bloque: "Bloque III: Lírica",
+  profesor: "Dr. Joaquín Rodríguez Beltrán",
+  autor: "Francisco de Terrazas",
+  titulo: "Soñé que de una peña me arrojaba",
+  rotulo: "III",
+  referencia: '<span class="sc">Terrazas</span>, Francisco, <i>Poesías</i>, ed. de Antonio Castro Leal, Porrúa, México, 1941, p. 5.',
+  referenciaTexto: "TERRAZAS, Francisco, Poesías, Ed. de Antonio Castro Leal, Porrúa, México, 1941, p. 5.",
+  poema: [
+    ["Soñé que de una peña me arrojaba", "quien mi querer sujeto a sí tenía,", "y casi ya en la boca me cogía", "una fiera que abajo me esperaba."],
+    ["Yo, con temor buscando, procuraba", "de dónde con las manos me tendría,", "y el filo de una espada la una asía", "y en una yerbezuela la otra hincaba."],
+    ["La yerba a más andar la iba arrancando,", "la espada a mí la mano deshaciendo,", "yo más sus vivos filos apretando…"],
+    ["¡Oh, mísero de mí, qué mal me entiendo,", "pues huelgo verme estar despedazando", "de miedo de acabar mi mal muriendo!"]
+  ],
+  partes: [
+    {
+      id: "contexto", nombre: "Contexto",
+      titulo: "El modelo petrarquista",
+      lead: "Antes de analizar el poema, conviene saber qué tipo de poesía está imitando Terrazas. Lee esta introducción y responde las preguntas de comprobación.",
+      lectura: `
+        <h3>Petrarca y su cancionero</h3>
+        <p>Francesco Petrarca (1304–1374) reunió en su <i>Canzoniere</i> más de trescientos poemas dedicados a Laura, una dama a la que ama sin ser correspondido. Ese libro se convirtió en el modelo de la poesía amorosa europea durante dos siglos: miles de poetas imitaron sus temas, sus imágenes y sus formas métricas.</p>
+        <h3>La llegada a la lengua castellana</h3>
+        <p>En la primera mitad del siglo <span style="font-variant:small-caps">xvi</span>, Juan Boscán y Garcilaso de la Vega adaptaron al castellano los versos y las estrofas de la poesía italiana. Sus obras se publicaron juntas en 1543, y desde entonces la manera italiana de escribir poesía amorosa se extendió por España y por América.</p>
+        <h3>Rasgos que vas a reconocer</h3>
+        <ul>
+          <li><strong>El amor como sufrimiento.</strong> El amante padece, pero no quiere dejar de amar: su dolor (su «mal») es también lo que da sentido a su vida.</li>
+          <li><strong>La dama inalcanzable.</strong> Es bella, distante y a menudo desdeñosa; tiene poder absoluto sobre la voluntad del amante.</li>
+          <li><strong>Las paradojas.</strong> El amor se expresa con contrarios: fuego y hielo, «dulce mal», vivir muriendo.</li>
+          <li><strong>La mirada hacia dentro.</strong> El poema describe el estado interior del amante, que se analiza y se lamenta de sí mismo.</li>
+          <li><strong>Alegorías y visiones.</strong> Escenas completas (un naufragio, una caída, un sueño) representan ese estado interior. Lo que se cuenta no debe leerse al pie de la letra.</li>
+        </ul>
+        <h3>Francisco de Terrazas</h3>
+        <p>Terrazas (c. 1525–c. 1600) era hijo de un conquistador del mismo nombre y suele considerarse el primer poeta nacido en la Nueva España del que se conserva obra. Varios de sus sonetos aparecen en <i>Flores de baria poesía</i> (1577), un cancionero manuscrito reunido en la Ciudad de México, y Miguel de Cervantes lo elogió en <i>La Galatea</i> (1585). Su poesía muestra que el petrarquismo se cultivaba en la Nueva España con el mismo oficio que en la península.</p>
+      `,
+      preguntas: [
+        { id: "c1", tipo: "opcion", enunciado: "En la tradición petrarquista, ¿cómo vive el amante su sufrimiento?",
+          opciones: ["Busca curarse cuanto antes y olvidar a la dama.", "Lo padece, pero no quiere renunciar a él porque es parte de su amor.", "Lo considera un castigo divino por sus pecados.", "No sufre: el amor petrarquista es siempre correspondido."],
+          correcta: 1, porque: ["El amante petrarquista no busca curarse: si dejara de sufrir, dejaría de amar.", null, "El sufrimiento nace del amor no correspondido, no de una culpa religiosa: esta poesía es amorosa, no penitencial.", "Es al revés: la dama suele ser inalcanzable o desdeñosa, y de ahí nace el sufrimiento."], explicacion: "El amante petrarquista se aferra a su dolor: dejar de sufrir significaría dejar de amar. Guarda esta idea para el último terceto del poema." },
+        { id: "c2", tipo: "opcion", enunciado: "¿Cuál de estas expresiones es una paradoja típica del petrarquismo?",
+          opciones: ["«Hermosa como una rosa»", "«Vivo sin vivir en mí»", "«Dulce mal»", "«Ojos verdes»"],
+          correcta: 2, porque: ["Es una comparación (un símil) muy frecuente, pero no une términos contrarios.", "Sí es paradójica, pero pertenece a la poesía mística (Santa Teresa, San Juan de la Cruz), no al petrarquismo amoroso.", null, "Es una simple descripción física, sin ninguna contradicción."], explicacion: "«Dulce mal» une dos términos contrarios para describir el amor. «Vivo sin vivir en mí» también es paradójico, pero pertenece a la poesía mística (Santa Teresa, San Juan), no al petrarquismo amoroso." },
+        { id: "c3", tipo: "opcion", enunciado: "Si un poema petrarquista narra una escena extraña o violenta (una caída, una tormenta, un sueño), lo más probable es que…",
+          opciones: ["cuente un suceso real de la vida del poeta.", "represente de manera figurada el estado interior del amante.", "sea una parodia del petrarquismo.", "describa un paisaje de la Nueva España."],
+          correcta: 1, porque: ["La poesía petrarquista no narra sucesos reales: sus escenas son imágenes de lo que siente el amante.", null, "No hay nada burlesco: el petrarquismo usa estas imágenes en serio.", "Estas escenas no describen un lugar concreto, sino el estado interior del amante."], explicacion: "Es una alegoría: cada elemento de la escena corresponde a algo del estado amoroso. En la cuarta parte de esta unidad vas a descifrar la del poema de Terrazas." }
+      ]
+    },
+    {
+      id: "metrica", nombre: "Métrica",
+      titulo: "Medida, rima y estrofas",
+      lead: "Vas a medir algunos versos, identificar la rima y reconocer las estrofas. Con esos datos podrás deducir qué forma métrica usa Terrazas.",
+      lectura: `
+        <h3>Recuerda</h3>
+        <ul>
+          <li><strong>Sinalefa:</strong> cuando una palabra termina en vocal y la siguiente empieza por vocal (o por <i>h</i> muda), ambas vocales se pronuncian en una sola sílaba: <i>de‿una</i>. Una pausa fuerte (una coma, por ejemplo) puede impedirla.</li>
+          <li><strong>Final del verso:</strong> si la última palabra es aguda se suma una sílaba; si es esdrújula se resta una; si es llana, no se cambia nada.</li>
+          <li><strong>Rima consonante:</strong> coinciden vocales y consonantes desde la última vocal acentuada. <strong>Rima asonante:</strong> solo coinciden las vocales.</li>
+          <li><strong>Diéresis:</strong> a veces el poeta separa en dos sílabas un diptongo para completar la medida, y lo indica con dos puntos sobre la vocal: <i>sü-a-ves</i>.</li>
+        </ul>
+        <h3>Tipos de endecasílabo</h3>
+        <p>El endecasílabo lleva siempre un acento en la 10.ª sílaba. Según dónde caigan los demás acentos principales, recibe un nombre distinto:</p>
+        <ul>
+          <li><strong>Heroico:</strong> acentos en 2.ª, 6.ª y 10.ª</li>
+          <li><strong>Melódico:</strong> acentos en 3.ª, 6.ª y 10.ª</li>
+          <li><strong>Enfático:</strong> acentos en 1.ª, 6.ª y 10.ª</li>
+          <li><strong>Sáfico:</strong> acentos en 4.ª, 8.ª y 10.ª</li>
+        </ul>
+        <p>Las palabras átonas (artículos, preposiciones, conjunciones, pronombres como <i>me</i> o <i>la</i>) no llevan acento métrico. Por ejemplo, el verso 7 es <strong>heroico</strong>:</p>
+        <blockquote>y‿el-<b>FI</b>-lo-de‿u-na‿es-<b>PA</b>-da-la‿u-na‿a-<b>SÍ</b>-a <span style="font-style:normal">(2.ª, 6.ª y 10.ª)</span></blockquote>
+      `,
+      preguntas: [
+        { id: "m1", tipo: "silabas", verso: 1, enunciado: "Divide el verso 1 en sílabas métricas. Haz clic en la letra con la que empieza cada sílaba (la primera ya está marcada). Si dos vocales de palabras distintas se pronuncian en una sola sílaba, no marques la segunda.",
+          solucion: "So|ñé |que |de u|na |pe|ña |me a|rro|ja|ba",
+          pista: "Busca las sinalefas: hay dos, entre palabras que terminan en vocal y palabras que empiezan por vocal. La última palabra, «arrojaba», es llana.",
+          explicacion: "11 sílabas. Hay sinalefa en «de‿una» y en «me‿arrojaba»." },
+        { id: "m2", tipo: "silabas", verso: 9, enunciado: "Divide el verso 9 en sílabas métricas de la misma manera.",
+          solucion: "La |yer|ba a |más |an|dar |la i|ba a|rran|can|do,",
+          pista: "Este verso tiene tres sinalefas. Fíjate en «yerba a», «la iba» e «iba arrancando». Recuerda que «rr» no se separa.",
+          explicacion: "11 sílabas, con tres sinalefas: «yerba‿a», «la‿iba» e «iba‿arrancando»." },
+        { id: "m3", tipo: "silabas", verso: 12, enunciado: "Divide el verso 12 en sílabas métricas.",
+          solucion: "¡Oh, |mí|se|ro |de |mí, |qué |mal |me en|tien|do,",
+          pista: "La coma después de «Oh» marca una pausa que impide la sinalefa. En cambio, entre «me» y «entiendo» sí hay sinalefa.",
+          explicacion: "11 sílabas. La pausa tras «Oh» impide la sinalefa; «me‿entiendo» sí la tiene." },
+        { id: "m4", tipo: "acentos", versos: [4], enunciado: "Marca las sílabas que llevan los acentos principales del verso 4 y elige qué tipo de endecasílabo es.",
+          silabas: ["u", "na", "fie", "ra", "que‿a", "ba", "jo", "me‿es", "pe", "ra", "ba"],
+          tonicas: [3, 6, 10], opcionales: [1],
+          tipos: ["heroico", "melódico", "enfático", "sáfico"], tipoCorrecto: "melódico",
+          explicacion: "Los acentos principales caen en <b>fie</b>ra (3.ª), a<b>ba</b>jo (6.ª) y espe<b>ra</b>ba (10.ª): es un endecasílabo melódico. Algunos lectores acentúan también «una» (1.ª); no cambia el tipo." },
+        { id: "m5", tipo: "rima", enunciado: "Asigna una letra mayúscula a cada verso según su rima (versos de arte mayor). Usa la misma letra para los versos que riman entre sí, empezando por A.",
+          correcta: "ABBAABBACDCDCD", grupos: [4, 4, 3, 3],
+          explicacion: "Esquema: ABBA ABBA CDC DCD. Las rimas son -aba, -ía, -ando y -endo." },
+        { id: "m6", tipo: "opcion", enunciado: "¿Qué tipo de rima tiene el poema?",
+          opciones: ["Asonante", "Consonante", "No tiene rima (verso blanco)", "Libre"], correcta: 1, porque: ["En la rima asonante solo coinciden las vocales. Aquí coinciden también las consonantes: arroj-aba / esper-aba.", null, "Los versos sí riman: compara cómo terminan los versos 1 y 4.", "La rima no es libre: sigue el esquema fijo que identificaste en la pregunta anterior."],
+          explicacion: "Es consonante: en «arrojaba / tenía / cogía / esperaba» coinciden vocales y consonantes desde la última vocal tónica (-aba, -ía)." },
+        { id: "m7", tipo: "opcion", enunciado: "¿Cómo se agrupan los versos?",
+          opciones: ["Cuatro cuartetos", "Dos cuartetos y dos tercetos", "Dos serventesios y dos tercetos encadenados", "Una silva de catorce versos"], correcta: 1, porque: ["Solo las dos primeras estrofas tienen cuatro versos; las dos últimas tienen tres.", null, "Un serventesio rima ABAB, y estos cuartetos riman ABBA. Los tercetos encadenados enlazan sus rimas de uno a otro (ABA BCB CDC…), lo que no ocurre aquí.", "La silva combina heptasílabos y endecasílabos sin estrofas fijas; aquí todos los versos son endecasílabos y hay estrofas."],
+          explicacion: "Los cuartetos riman ABBA (un serventesio rimaría ABAB). Los tercetos riman CDC DCD." },
+        { id: "m8", tipo: "opcion", enunciado: "Con todos estos datos, ¿qué composición es?",
+          opciones: ["Una lira", "Una octava real", "Un soneto", "Un romance"], correcta: 2, porque: ["La lira tiene cinco versos que combinan heptasílabos y endecasílabos (7a 11B 7a 7b 11B).", "La octava real tiene ocho endecasílabos que riman ABABABCC.", null, "El romance es una serie indefinida de octosílabos con rima asonante en los versos pares."],
+          explicacion: "Catorce endecasílabos con rima consonante, distribuidos en dos cuartetos y dos tercetos: es un soneto, la forma predilecta de Petrarca y sus imitadores." }
+      ]
+    },
+    {
+      id: "lengua", nombre: "Lengua",
+      titulo: "Ordenar, concordar, definir",
+      lead: "La poesía del siglo XVI altera con frecuencia el orden normal de la frase (hipérbaton). Aquí vas a poner el poema en prosa, aclarar a quién se refieren algunas expresiones y detectar las palabras que hoy pueden confundirnos.",
+      lectura: `
+        <h3>¿Por qué prosificar?</h3>
+        <p>La poesía de los siglos <span style="font-variant:small-caps">xvi</span> y <span style="font-variant:small-caps">xvii</span> altera con frecuencia el orden normal de la frase (hipérbaton), separa palabras que van juntas y deja otras sobreentendidas. Prosificar es reescribir un pasaje en el orden habitual del español, sin quitar ni inventar información. Es una manera inicial de asegurarnos de que entendemos la sintaxis: quién hace qué, qué palabra concuerda con cuál, qué complementa a qué. Si no podemos poner un pasaje en prosa, todavía no lo hemos entendido, y cualquier interpretación que hagamos después quedará en el aire.</p>
+        <h3>Un ejemplo</h3>
+        <p>Esta octava real es del mismo autor, Francisco de Terrazas. Pertenece a <i>Nuevo Mundo y Conquista</i>, un poema épico sobre la conquista de México que quedó inacabado y del que se conservan fragmentos.</p>
+        <p class="verse-quote">Llorosa Nueva España, que deshecha<br>te vas en llanto y duelo consumiendo,<br>vente mis tristes ojos tan estrecha,<br>va el pernicioso daño así cundiendo,<br>que el ser tan estimada no aprovecha<br>del gran Filipo para no ir cayendo<br>de tiempo en tiempo siempre en más tristeza,<br>en más miserias, hambres y pobreza.</p>
+        <ul>
+          <li><strong>Localiza los verbos conjugados:</strong> <i>te vas consumiendo</i>, <i>ven</i> (escondido en <i>vente</i>), <i>va cundiendo</i>, <i>aprovecha</i>.</li>
+          <li><strong>Busca el sujeto de cada uno:</strong> «vente mis tristes ojos» es <i>te ven mis tristes ojos</i>: el sujeto es «mis tristes ojos». El de «va cundiendo» es «el pernicioso daño», y el de «no aprovecha», «el ser tan estimada del gran Filipo».</li>
+          <li><strong>Reúne lo que el verso separa:</strong> «estimada… del gran Filipo» (Felipe II) van juntos, aunque «no aprovecha» se interponga; también van juntos «así… que».</li>
+          <li><strong>Conserva las palabras con significado y actualiza los enlaces:</strong> al prosificar procuramos mantener idénticos los sustantivos, los verbos, los adjetivos y los adverbios (<i>estrecha</i>, <i>cundiendo</i>, <i>aprovecha</i>…), aunque hoy suenen extraños; sus sentidos los aclararemos después. En cambio, los nexos, las conjunciones y las preposiciones sí podemos actualizarlos al español de hoy, para asegurarnos de que entendemos la construcción. Aquí, «así… que» equivale a <i>tanto que</i>, y «del gran Filipo» es un complemento agente de la pasiva («ser estimada de»): hoy diríamos <i>por el gran Filipo</i>.</li>
+        </ul>
+        <div class="fb info"><span class="label">Prosificación</span><p class="model">Llorosa Nueva España, que, deshecha, te vas consumiendo en llanto y duelo: mis tristes ojos te ven tan estrecha, [y] el pernicioso daño va cundiendo tanto, que el ser tan estimada por el gran Filipo no aprovecha para no ir cayendo de tiempo en tiempo siempre en más tristeza, en más miserias, hambres y pobreza.</p></div>
+        <h3>Ahora tú</h3>
+        <p>Primero localiza el verbo principal, después su sujeto y luego sus complementos. Reordénalos en el orden habitual del español, conservando los sustantivos, verbos, adjetivos y adverbios del poema; los nexos, conjunciones y preposiciones puedes actualizarlos. Puedes añadir entre corchetes las palabras que el poema da por sobreentendidas.</p>
+      `,
+      preguntas: [
+        { id: "l1", tipo: "opcion", versos: [1, 2], enunciado: "¿Cuál es el sujeto de «arrojaba» (v. 1)?",
+          opciones: ["yo", "una peña", "quien mi querer sujeto a sí tenía", "una fiera"], correcta: 2, porque: ["El yo no realiza la acción, la recibe: lo indica el pronombre «me» («me arrojaba»).", "«De una peña» es un complemento: indica desde dónde lo arrojan.", null, "«Una fiera» es el sujeto de «cogía» y de «esperaba», no de «arrojaba»."],
+          explicacion: "El sujeto está en el verso siguiente, separado del verbo por el hipérbaton: «quien mi querer sujeto a sí tenía». No es «yo»: el yo es quien recibe la acción («me arrojaba»)." },
+        { id: "l2", tipo: "opcion", versos: [1, 2], enunciado: "Ahora bien, ¿a quién se refiere «quien mi querer sujeto a sí tenía» (v. 2)?",
+          opciones: ["A la amada", "A la fiera que espera abajo", "Al propio yo que habla en el poema", "A la peña"], correcta: 0, porque: [null, "La fiera está abajo, esperando; quien lo arroja es otra persona: la que domina su voluntad amorosa.", "El yo no puede arrojarse a sí mismo y a la vez «tener sujeto a sí» su propio querer: se trata de otra persona.", "La peña es el lugar desde el que lo arrojan; una peña no puede tener sometido un querer."],
+          explicacion: "Es quien tenía sometida («sujeto a sí») la voluntad amorosa del yo («mi querer»): la amada. Ella es también quien lo arroja de la peña, es decir, quien lo rechaza." },
+        { id: "l3", tipo: "abierta", versos: [1, 2, 3, 4], enunciado: "Pon en prosa el primer cuarteto (vv. 1–4).",
+          ideas: [{"ok": "Colocaste el sujeto («quien tenía sujeto a sí mi querer») en el orden habitual.", "falta": "¿Quién «arrojaba»? Busca el sujeto en el verso 2 y ordénalo: primero quien tenía…, luego qué tenía.", "claves": ["quien tenia sujeto a si mi querer", "quien tenia mi querer sujeto a si", "quien tenia sujeto mi querer", "quien tenia a mi querer sujeto", "quien tenia sujeto a mi querer"]}, {"ok": "Colocaste «una fiera» como sujeto de «cogía».", "falta": "¿Quién «cogía»? En el poema el sujeto aparece en el verso 4. Colócalo antes del verbo.", "claves": ["una fiera que me esperaba abajo", "una fiera que abajo me esperaba", "una fiera me cogia", "la fiera me cogia", "fiera que me esperaba abajo casi me cogia", "fiera casi me cogia"]}, {"conserva": ["soñé", "quien", "querer", "sujeto", "tenía", "peña", "arrojaba", "boca", "cogía", "fiera", "abajo", "esperaba"]}],
+          propuesta: "Soñé que quien tenía sujeto a sí mi querer me arrojaba desde una peña, y una fiera que me esperaba abajo casi me cogía ya con la boca." },
+        { id: "l4", tipo: "opcion", versos: [7, 8], enunciado: "En los versos 7 y 8, ¿a qué se refieren «la una» y «la otra»?",
+          opciones: ["A la espada y a la yerbezuela", "A las manos", "A la dama y a la fiera", "A las dos orillas de la peña"], correcta: 1, porque: ["La espada y la yerbezuela son aquello a lo que se agarra; «la una» y «la otra» son las que se agarran.", null, "La dama y la fiera no aparecen en estos versos; los pronombres retoman un sustantivo cercano.", "El poema no habla de orillas. Busca un sustantivo femenino plural en el verso 6."],
+          explicacion: "Retoman «las manos» del verso 6. «Hincar» es transitivo: «la otra» es su objeto directo y el sujeto es un «yo» implícito ([yo] hincaba la otra en una yerbezuela). Con «asía» caben dos lecturas: «la una» puede ser el sujeto (la una asía el filo) o, en paralelo con «hincaba», un complemento con «yo» como sujeto ([yo] asía con la una el filo)." },
+        { id: "l5", tipo: "abierta", versos: [5, 6, 7, 8], enunciado: "Pon en prosa el segundo cuarteto (vv. 5–8).",
+          ideas: [{"ok": "Ordenaste lo que «procuraba» el yo.", "falta": "¿Qué «procuraba» el yo? Pon junto a ese verbo la oración que depende de él («de dónde…»).", "claves": ["procuraba de donde", "procuraba ver de donde", "procuraba saber de donde", "procuraba buscar de donde", "procuraba encontrar de donde", "procuraba averiguar de donde", "de donde me tendria con las manos", "de donde me tendria"]}, {"ok": "Pusiste «la una» y «la otra» junto a sus verbos.", "falta": "¿Qué hacía «la una» y qué hacía «la otra»? Colócalas junto a «asía» y «hincaba».", "claves": ["la una asia", "una asia", "con la una asia", "asia con la una", "asia con una", "yo asia", "asia la una", "la una mano asia", "una mano asia", "con una asia", "con una mano asia", "con la una mano asia", "la otra hincaba", "otra hincaba", "la otra mano hincaba", "hincaba la otra"]}, {"conserva": ["temor", "buscando", "procuraba", "manos", "tendría", "filo", "espada", "asía", "yerbezuela", "hincaba"]}],
+          propuesta: "Yo, buscando con temor, procuraba [ver] de dónde me tendría con las manos, y la una asía el filo de una espada, y [yo] hincaba la otra en una yerbezuela.<br><br>También es válido leer «asía» como «hincaba», con un «yo» implícito: «…y [yo] asía con la una el filo de una espada, y [yo] hincaba la otra en una yerbezuela»." },
+        { id: "l6", tipo: "corta", versos: [9], enunciado: "¿Cuál es el sujeto de «iba [arrancando]» en el verso 9? Escríbelo.",
+          aceptadas: ["mano", "manos", "yo", "amante"],
+          errores: [
+            { claves: ["yerba", "hierba", "yerbezuela"], porque: "«La yerba» no puede ser el sujeto: es lo que se arranca. Está adelantada al principio del verso y el pronombre «la» la repite: es el objeto directo." },
+            { claves: ["espada", "filo", "filos"], porque: "La espada tiene su propio verbo en el verso siguiente («la espada… deshaciendo»). Piensa en quién o qué está agarrado a la hierba." },
+            { claves: ["fiera", "amada", "dama", "quien"], porque: "Ese personaje no participa en esta escena: aquí el amante cuelga de la peña sujetándose con las manos." }
+          ],
+          generico: "Piensa en quién o qué está agarrado a la yerbezuela desde el verso 8. El sujeto no está escrito: hay que deducirlo.",
+          respuesta: "«yo» (el amante) o «la mano» (la otra, la que se hincaba en la yerbezuela)",
+          explicacion: "El sujeto no está expreso, así que hay dos lecturas posibles: el amante («yo») va arrancando la hierba con su peso, o lo hace la mano que se aferraba a la yerbezuela. Lo que no puede ser sujeto es «la yerba»: es el objeto directo adelantado y repetido con «la»." },
+        { id: "l6b", tipo: "opcion", versos: [10], enunciado: "¿Cuál es el sujeto de «deshaciendo» en el verso 10?",
+          opciones: ["la espada", "la mano", "yo", "la yerba"], correcta: 0,
+          porque: [null, "«La mano» es lo que se deshace: es el objeto directo. «A mí» indica de quién es esa mano.", "El yo aparece como «a mí»: es quien sufre la acción, no quien la realiza.", "La yerba pertenece al verso anterior; en este verso no aparece."],
+          explicacion: "El verso sigue el mismo modelo que el anterior, con el verbo «iba» sobreentendido: «la espada [iba] deshaciendo la mano a mí» = la espada me iba destrozando la mano." },
+        { id: "l7", tipo: "abierta", versos: [9, 10, 11], enunciado: "Pon en prosa el primer terceto (vv. 9–11).",
+          ideas: [{"ok": "Pusiste «la yerba» después del verbo, como objeto.", "falta": "«La yerba» no es el sujeto de «iba arrancando»: colócala después del verbo.", "claves": ["iba arrancando la yerba", "arrancando la yerba", "arrancaba la yerba", "iba arrancando a mas andar la yerba"]}, {"ok": "Pusiste «la espada» como sujeto de «deshaciendo».", "falta": "¿Quién iba «deshaciendo» la mano? Puedes repetir «iba» entre corchetes.", "claves": ["la espada iba deshaciendo", "la espada deshaciendo", "la espada me iba deshaciendo", "la espada deshacia", "espada iba deshaciendo"]}, {"ok": "Ordenaste lo que hacía el yo con los filos.", "falta": "¿Qué hacía «yo» en el verso 11? Coloca el verbo después del sujeto.", "claves": ["yo iba apretando", "yo apretando", "yo apretaba", "iba apretando"]}, {"conserva": ["yerba", "andar", "arrancando", "espada", "mano", "deshaciendo", "vivos", "filos", "apretando"]}],
+          propuesta: "[Mi mano] iba arrancando la yerba a más andar, la espada [iba] deshaciendo la mano a mí, [y] yo [iba] apretando más sus vivos filos…" },
+        { id: "l8", tipo: "abierta", versos: [12, 13, 14], enunciado: "Pon en prosa el último terceto (vv. 12–14).",
+          ideas: [{"ok": "Ordenaste el último verso: lo que teme acabar y cómo.", "falta": "Revisa el último verso: ¿qué teme acabar el amante y de qué manera?", "claves": ["acabar muriendo mi mal", "acabar mi mal muriendo", "muriendo acabar mi mal", "acabar con mi mal muriendo", "acabar mi mal al morir", "miedo de acabar", "miedo a acabar", "miedo de que se acabe", "miedo a que se acabe"]}, {"ok": "Mantuviste la relación causal con «pues».", "falta": "¿Qué une «qué mal me entiendo» con lo que sigue? Conserva o actualiza ese nexo.", "claves": ["pues", "porque", "ya que", "puesto que", "dado que"]}, {"conserva": ["mísero", "mal", "entiendo", "huelgo", "verme", "despedazando", "miedo", "acabar", "muriendo"]}],
+          propuesta: "¡Oh, mísero de mí, qué mal me entiendo, pues huelgo verme estar despedazando por miedo de acabar, muriendo, mi mal!" },
+        { id: "l9", tipo: "seleccion",
+          enunciado: "Antes de buscar en el diccionario hay que saber qué buscar. Haz clic en las palabras o expresiones del poema que hoy se usan poco o que aquí tienen un sentido distinto del habitual. Una palabra muy común puede estar usada con un significado que ya no es el nuestro. En la pestaña «Vocabulario» buscarás su sentido.",
+          terminos: [
+            { forma: "tener sujeto", v: 2, palabras: ["sujeto", "tenía"] },
+            { forma: "cogía", v: 3, palabras: ["cogía"] },
+            { forma: "procuraba", v: 5, palabras: ["procuraba"] },
+            { forma: "me tendría", v: 6, palabras: ["me", "tendría"] },
+            { forma: "asía", v: 7, palabras: ["asía"] },
+            { forma: "hincaba", v: 8, palabras: ["hincaba"] },
+            { forma: "a más andar", v: 9, palabras: ["más", "andar"] },
+            { forma: "mísero", v: 12, palabras: ["mísero"] },
+            { forma: "huelgo", v: 13, palabras: ["huelgo"] }
+          ] }
+      ]
+    },
+    {
+      id: "vocabulario", nombre: "Vocabulario", requiere: "l9",
+      titulo: "Las palabras en el Diccionario de Autoridades",
+      lead: "Estas son las palabras del poema que conviene buscar. Consulta cada una en el Diccionario de Autoridades, publicado por la Real Academia Española entre 1726 y 1739: es el diccionario más cercano a la lengua de Terrazas.",
+      lectura: `<p>Abre el <a href="https://apps2.rae.es/DA.html" target="_blank" rel="noopener">Diccionario de Autoridades</a> en otra pestaña. Escribe la palabra en «Consulta en: las entradas» y pulsa «Consulta»; los verbos se buscan en infinitivo. Muchas entradas tienen varias acepciones (varios artículos con el mismo lema): lee todas y quédate con la que corresponde al sentido del verso.</p>`,
+      preguntas: [
+        { id: "v00", tipo: "acepcion", forma: "tener sujeto", verso: 2, lema: "SUJETO (participio de SUJETAR)", modo: "elegir",
+          opciones: ["Someter alguna cosa à su dominio, señorío, obediencia, ù disposicion.", "Vale assimismo afirmar, ò contener alguna cosa con la fuerza.", "Vale tambien lo mismo que expuesto, ò con capacidad para alguna cosa."], correcta: 0,
+          porque: [null, "Es el sentido físico de «sujetar», el más común hoy; pero la amada no sostiene nada con la fuerza: domina la voluntad del amante.", "Esta acepción («estar sujeto a enfermedades») indica estar expuesto a algo; aquí se habla de dominio."],
+          explicacion: "Autoridades define «sujeto» como participio de «sujetar». «Quien mi querer sujeto a sí tenía» = quien tenía sometido a su dominio mi querer: la amada domina por completo la voluntad amorosa del yo, un rasgo típico de la dama petrarquista." },
+        { id: "v0", tipo: "acepcion", forma: "cogía", verso: 3, lema: "COGER", modo: "elegir",
+          opciones: ["Significa tambien asir ù agarrar algúna cosa.", "Allegar, y juntar en uno lo que está esparcído, y dividído.", "Se toma muchas veces por hallar.", "Se toma tambien por dar cobro ò recoger algúna cosa: como son los frutos de la tierra."], correcta: 0,
+          porque: [null, "No hay nada esparcido que reunir: la fiera atrapa al amante.", "La fiera no lo encuentra por casualidad: lo está esperando para atraparlo con la boca.", "No se recoge ninguna cosecha: la fiera atrapa al amante con la boca."],
+          explicacion: "«Casi ya en la boca me cogía una fiera» = una fiera casi me atrapaba ya con la boca. En el español de México este verbo tiene hoy otros usos; aquí significa «asir, agarrar»." },
+        { id: "v2", tipo: "acepcion", forma: "procuraba", verso: 5, lema: "PROCURAR", modo: "copiar",
+          acepcion: "Solicitar y hacer las diligencias para conseguir lo que se desea.",
+          explicacion: "El amante, con miedo, intentaba encontrar de dónde sostenerse con las manos." },
+        { id: "v1", tipo: "acepcion", forma: "me tendría", verso: 6, lema: "TENER / TENERSE", modo: "elegir",
+          opciones: ["Vale afirmarse, ò assegurarse para no caer.", "Vale assimismo resistir, ò hacer oposicion à alguno en riña, ò pelea.", "Vale assimismo juzgar, reputar, y entender.", "Vale tambien posseer, estár adornado, ù abundante de alguna cosa material, ò immaterial."], correcta: 0,
+          porque: [null, "No hay ninguna pelea: el amante busca dónde agarrarse mientras cae.", "El verso no habla de opinar ni de juzgar, sino de sostenerse con las manos.", "No se trata de poseer algo, sino de sostenerse para no caer."],
+          explicacion: "«De dónde con las manos me tendría» = a qué me agarraría con las manos para no caer. Hoy diríamos «me detendría» o «me agarraría». En Autoridades esta acepción aparece bajo TENERSE." },
+        { id: "v3", tipo: "acepcion", forma: "asía", verso: 7, lema: "ASIR", modo: "elegir",
+          opciones: ["Coger con la mano, ò prender alguna cosa de manéra que no se escape ni vaya.", "Metaphoricamente se dice de las plantas: y vale tanto como arraigarse, ò prender en la tierra quando se plantan de nuevo."], correcta: 0, porque: [null, "Esta acepción se refiere a las plantas que arraigan en la tierra; en el verso es una mano que agarra una espada."],
+          explicacion: "Con una mano agarraba el filo de la espada para no caer." },
+        { id: "v4", tipo: "acepcion", forma: "hincaba", verso: 8, lema: "HINCAR", modo: "abierto",
+          acepcion: "Meter, introducir, clavar una cosa en otra, que la penetre y haga agujero, quedando fixa en ella.",
+          explicacion: "Clavaba la otra mano en la hierba para aferrarse a ella. Fíjate en que Autoridades registra aparte «hincar la rodilla», que no corresponde a este verso." },
+        { id: "v5", tipo: "acepcion", forma: "a más andar", verso: 9, lema: "ANDAR (frase «a más andar»)", modo: "interpretar",
+          opciones: ["[Mi mano] iba arrancando la hierba cada vez más deprisa.", "[Yo] iba arrancando la hierba mientras caminaba.", "[Mi mano] iba arrancando más hierba de la que podía sostener.", "[Mi mano] iba arrancando la hierba poco a poco, con cuidado."], correcta: 0,
+          porque: [null, "Aquí «andar» no significa caminar: el amante está colgado de una peña. «A más andar» es una frase hecha.", "«Más» no indica cantidad de hierba, sino que forma parte de la frase hecha «a más andar».", "Es justo lo contrario: la frase expresa rapidez, no lentitud ni cuidado."],
+          explicacion: "Autoridades define «a más andar» como «Phrase que significa con celeridád, con presteza». La hierba cede enseguida: el apoyo frágil se pierde muy rápido." },
+        { id: "v6", tipo: "acepcion", forma: "mísero", verso: 12, lema: "MÍSERO (remite a MISERABLE)", modo: "elegir",
+          opciones: ["Desdichado, infelíz y desafortunado.", "Significa tambien avariento, escaso y apocado.", "Abatido, sin valor ni fuerza."], correcta: 0, porque: [null, "Este sentido (avaro, tacaño) no tiene relación con la situación: el amante no habla de dinero.", "El amante sí está abatido, pero aquí se queja de su suerte: «¡oh, mísero de mí!» equivale a «¡pobre de mí!»."],
+          explicacion: "Autoridades define «mísero» como «lo mismo que miserable». Aquí el amante se lamenta de su desdicha: «¡pobre de mí!»." },
+        { id: "v7", tipo: "acepcion", forma: "huelgo", verso: 13, lema: "HOLGAR", modo: "elegir",
+          opciones: ["Cessar en el trabajo, suspender la labor, o no tener que hacer.", "Vale tambien celebrar, tener gusto, contento y placer de alguna cosa, alegrarse de ella.", "Significa tambien divertirse, recrearse en algún festín ó passeo.", "Se dice tambien de las cosas inanimadas, que están sin exercicio o sin uso."], correcta: 1, porque: ["El amante no descansa ni deja de trabajar: se está despedazando.", null, "No hay diversión ni paseo; es un gusto íntimo y paradójico.", "Esta acepción se aplica a las cosas sin uso, no a una persona."],
+          explicacion: "«Huelgo verme estar despedazando» = me alegro de verme despedazar. Esa alegría absurda es la paradoja del último terceto." }
+      ]
+    },
+    {
+      id: "figurado", nombre: "Sentido figurado",
+      titulo: "Lo que el sueño significa",
+      lead: "No se trata de hacer un catálogo de figuras retóricas, sino de leer el poema en su conjunto y explicar qué significa la escena en el plano amoroso. Cada pregunta tiene una respuesta modelo para que compares la tuya.",
+      lectura: `
+        <p>El soneto narra una escena física: alguien cae desde una peña, una fiera lo espera abajo y él se sujeta como puede. Pero recuerda lo que leíste en la introducción: en la poesía petrarquista, una escena así suele ser una <strong>alegoría</strong> del estado interior del amante. Cada elemento importante tiene un segundo sentido.</p>
+      `,
+      preguntas: [
+        { id: "f0", tipo: "abierta", enunciado: "El poema empieza con «Soñé». ¿Qué efecto tiene presentar la escena como un sueño? ¿Cómo ayuda ese marco a leerla como alegoría?",
+          ideas: [{"ok": "Señalas que la escena no debe leerse al pie de la letra.", "falta": "¿Ocurre de verdad lo que se cuenta? ¿Qué nos avisa la palabra «Soñé» sobre cómo leer la escena?", "claves": ["no literal*", "no es literal", "no es real", "no real*", "no ocurr*", "no sucede*", "no pasa ", "no paso", "imagin*", "irreal*", "ficcion*", "ficticio*", "fantas*", "figurad*", "metafor*", "simbol*", "no debe leerse", "no se lee", "no se debe tomar", "al pie de la letra", "sentido literal", "segundo sentido", "otro sentido", "no es verdad", "inventad*", "onirico*"]}, {"ok": "Relacionas la escena con lo que siente el amante.", "falta": "Si la escena no es real, ¿qué representa? Piensa en el estado interior del amante.", "claves": ["interior*", "sentimient*", "emocion*", "estado de animo", "animo", "alma", "psicolog*", "lo que siente", "siente", "sentir", "sufrimiento*", "sufr*", "angusti*", "dolor*", "amor*", "amoros*", "enamorad*", "corazon", "pasion*", "deseo*", "miedo*", "temor*", "inconsciente", "mente", "pensamiento*"]}, {"ok": "Relacionas el marco del sueño con la alegoría o con la tradición petrarquista.", "falta": "¿Recuerdas lo que viste en la introducción sobre las alegorías y las visiones en la poesía petrarquista?", "claves": ["alegor*", "vision*", "petrarc*", "tradicion*", "convencion*", "topico*", "comun en", "habitual*", "frecuente*", "otros poetas", "poesia amorosa", "recurso*", "modelo*", "imita*", "costumbre", "era comun", "se usaba"]}],
+          propuesta: "El sueño avisa de que lo narrado no ocurre literalmente: la caída, la fiera y la espada son imágenes del estado interior del amante. Era además un marco habitual en la poesía amorosa de tradición petrarquista (las visiones). Gracias a él, toda la escena funciona como una alegoría continuada." },
+        { id: "f1", tipo: "abierta", versos: [3, 4], enunciado: "Leyendo el poema en su conjunto, ¿qué representa la fiera que espera a la voz poética abajo, en el precipicio?",
+          ideas: [{"ok": "Identificas la fiera con la muerte.", "falta": "Piensa qué le pasaría al amante si cayera en la boca de la fiera. ¿Qué lo espera abajo?", "claves": ["muerte", "muer*", "morir*", "muriendo", "fallec*", "perec*", "fin de la vida", "fin de su vida", "acabar con su vida", "quitarle la vida", "perder la vida", "mata*", "matar*", "asesin*", "devor*", "tumba", "sepul*", "no sobrevivi*", "dejar de vivir", "dejaria de vivir", "deceso", "defuncion", "fatal*", "mortal*"]}, {"ok": "Relacionas la fiera con el final del poema.", "falta": "¿Hay alguna palabra en el último verso que confirme tu interpretación?", "claves": ["ultimo verso", "ultimos versos", "verso 14", "v 14", "ultimo terceto", "final del poema", "al final", "el final", "final*", "muriendo", "acabar mi mal", "ultima linea", "ultima estrofa", "termina el poema", "cierre", "conclusion", "desenlace"]}, {"ok": "Ves que la muerte acabaría con su sufrimiento.", "falta": "¿Qué terminaría si la fiera lo alcanzara?", "claves": ["fin de su sufrimiento", "fin a su sufrimiento", "fin de su mal", "fin a su mal", "fin a su dolor", "fin de su dolor", "acabar su mal", "acabar con su mal", "acabar con su dolor", "acabar con su sufrimiento", "acabaria*", "poner fin", "terminar*", "terminaria*", "cesar*", "cesaria*", "liberar*", "liberaria*", "alivi*", "descanso", "descansar", "dejaria de sufrir", "dejar de sufrir", "su mal", "su sufrimiento", "su dolor"]}],
+          propuesta: "La fiera representa la muerte. Si el amante cae, si pierde todo apoyo, lo espera la boca de la fiera, es decir, morir. El último verso lo confirma: lo que teme es «acabar mi mal muriendo». La fiera es esa muerte que pondría fin a su sufrimiento." },
+        { id: "f2", tipo: "abierta", versos: [7, 10, 11, 13], enunciado: "¿Qué relación hay entre el filo de la espada al que se aferra la voz poética y el «verme estar despedazando» del verso 13? ¿Qué tiene que ver con la amada, que es quien lo arrojó de la peña?",
+          ideas: [{"ok": "Señalas que la espada lo hiere.", "falta": "¿Qué le hace la espada a la mano que la sujeta? Relee los versos 10 y 11.", "claves": ["dolor*", "duele", "doler*", "hiere", "herid*", "herir*", "lastim*", "dañ*", "sufr*", "sangr*", "cort*", "destroz*", "despedaz*", "deshac*", "deshecha", "tortur*", "pena", "padec*", "mutil*", "rasga*", "desgarr*", "agonia", "martirio"]}, {"ok": "Ves que, aun así, la espada es lo que lo sostiene.", "falta": "¿Para qué se agarra el amante a la espada, aunque lo corte?", "claves": ["aferr*", "agarr*", "sostien*", "sosten*", "sujet*", "apoy*", "asid*", "asir", "ase ", "no caer", "evitar caer", "para no caer", "no caerse", "salva*", "mantiene", "mantener*", "se tiene", "aprieta", "apret*", "aguant*", "resist*", "no soltar*", "no se suelta", "se suelta", "soporte", "sustento", "se cuelga", "colgado"]}, {"ok": "Relacionas la espada con el desdén de la amada.", "falta": "La amada es quien lo arrojó de la peña. ¿Qué actitud de ella podría ser esa espada que lo despedaza?", "claves": ["desden*", "desdeñ*", "desprecio*", "despreci*", "rechaz*", "indiferen*", "frialdad", "fria ", "cruel*", "no le corresponde", "no corresponde", "no lo ama", "no lo quiere", "no correspond*", "rigor*", "esquiv*", "ingrat*", "altiv*", "distan*", "lo ignora", "ignor*", "olvid*", "abandon*", "no le hace caso", "menospreci*", "negativa", "no amado", "amor no correspondido"]}, {"ok": "Conectas la espada con el «huelgo» del verso 13.", "falta": "¿Cómo se siente el amante mientras se despedaza, según el verso 13?", "claves": ["huelg*", "holga*", "alegr*", "gust*", "placer*", "contento", "content*", "disfrut*", "goza*", "goce", "feliz*", "felicidad", "satisfac*", "agrad*", "complac*", "regocij*"]}],
+          propuesta: "La espada es lo único firme a lo que el amante se agarra, pero lo hiere: le va deshaciendo la mano y, aun así, él aprieta más sus filos. Es el desdén de la amada, que lo arrojó de la peña: ese desdén lo despedaza, pero aferrarse a él, es decir, seguir amándola aunque lo rechace, es lo que lo mantiene lejos de la fiera. Por eso dice que «huelga» verse despedazar." },
+        { id: "f3", tipo: "abierta", versos: [8, 9], enunciado: "Ahora fíjate en la yerbezuela a la que se agarra con la otra mano. ¿Qué podría simbolizar en el plano amoroso?",
+          ideas: [{"ok": "Señalas que la yerba es un apoyo frágil.", "falta": "¿Resiste mucho la yerbezuela? Relee el verso 9.", "claves": ["fragil*", "debil*", "poco firme", "no es firme", "no resiste", "no aguanta", "cede", "cedi*", "se rompe", "se arranca", "arranc*", "inestable*", "insegur*", "endeble*", "delicad*", "efimer*", "pasajer*", "breve*", "rapid*", "enseguida", "poco dura", "no dura", "se pierde", "pierde", "quebradiz*", "pequeñ*", "poca cosa", "insuficiente", "no sirve", "no basta", "a mas andar", "poco a poco no", "se desprende", "se suelta"]}, {"ok": "La relacionas con la esperanza del amante.", "falta": "En el plano amoroso, ¿a qué podría aferrarse un amante rechazado, aunque sea algo poco firme?", "claves": ["esperanz*", "ilusion*", "expectativ*", "deseo*", "fe ", "confianza", "consuelo*", "promesa*", "posibilidad*", "oportunidad*", "anhelo*", "sueño*", "creer que", "pensar que", "alguna posibilidad", "esperar", "esperaba que"]}, {"ok": "La vinculas con algo que viene de la amada.", "falta": "¿De quién podría venir ese pequeño apoyo?", "claves": ["favor*", "señal*", "gesto*", "mirada*", "sonrisa*", "correspond*", "atencion*", "cariño*", "afecto*", "amada", "dama", "ella", "su amor", "palabra amable", "detalle*", "muestra de"]}],
+          propuesta: "La yerbezuela es un apoyo frágil que cede enseguida («a más andar la iba arrancando»). Podría simbolizar una esperanza débil: algún favor o alguna señal de la amada a la que el amante se aferra, pero que no resiste. Cuando la pierde, solo le queda la espada, es decir, el dolor." },
+        { id: "f4", tipo: "abierta", versos: [12, 13, 14], enunciado: "¿Cuál es «su mal» (v. 14) y por qué le daría miedo que acabara?",
+          ideas: [{"ok": "Identificas su mal con el sufrimiento amoroso.", "falta": "¿Qué es lo que hace sufrir al amante a lo largo de todo el poema?", "claves": ["sufrimiento*", "sufr*", "dolor*", "pena*", "padec*", "tormento*", "angusti*", "tristeza*", "triste*", "desdicha*", "amor*", "amoros*", "mal de amor", "enamor*", "pasion*", "desamor*", "desden*", "rechaz*", "agonia", "martirio", "melancol*"]}, {"ok": "Ves que solo la muerte acabaría con ese mal.", "falta": "¿De qué manera podría acabarse su mal, según el último verso?", "claves": ["muerte", "muer*", "morir*", "muriendo", "fallec*", "perec*", "fin de la vida", "fin de su vida", "acabar con su vida", "quitarle la vida", "perder la vida", "mata*", "matar*", "asesin*", "devor*", "tumba", "sepul*", "no sobrevivi*", "dejar de vivir", "dejaria de vivir", "deceso", "defuncion", "fatal*", "mortal*", "fiera", "caer", "caida", "soltar*"]}, {"ok": "Entiendes que dejar de sufrir sería dejar de amar.", "falta": "Si el sufrimiento terminara, ¿qué más terminaría con él? Recuerda la primera pregunta de la introducción.", "claves": ["dejar de amar", "dejaria de amar", "dejar de querer", "dejaria de querer", "perder su amor", "perderia su amor", "perder el amor", "perderia el amor", "sin su amor", "sin amor", "su amor mismo", "es su amor", "es el amor", "amor mismo", "parte de su amor", "parte del amor", "sentido a su vida", "razon de vivir", "razon de ser", "prefiere sufrir", "prefiere seguir", "quiere sufrir", "ama su sufrimiento", "ama su dolor", "ama su mal", "no quiere dejar", "no quiere que acabe", "no quiere que termine", "aferr*", "se aferra", "sigue amando", "seguir amando", "amarla", "la ama", "quererla", "la quiere", "olvidar*", "olvido", "dejar de sentir", "dejaria de sentir"]}],
+          propuesta: "Su «mal» es el sufrimiento amoroso: el dolor de amar a quien lo desdeña. Le da miedo que acabe por dos razones: la única manera de acabarlo sería morir (caer en la boca de la fiera), y ese mal es su amor mismo, de modo que dejar de sufrir sería dejar de amar. Por eso prefiere seguir despedazándose. Es la paradoja petrarquista del dolor querido que viste en la introducción." },
+        { id: "f5", tipo: "abierta", versos: [12, 13, 14], enunciado: "Explica la paradoja del último terceto: ¿por qué el amante «huelga» de verse despedazar? Relaciónala con alguno de los rasgos del petrarquismo que viste en la introducción.",
+          ideas: [{"ok": "Señalas la contradicción del amante.", "falta": "¿Tiene lógica alegrarse de despedazarse? ¿Qué dice el propio amante en el verso 12?", "claves": ["paradoj*", "contradic*", "absurd*", "ilogic*", "irracional*", "contrari*", "opuest*", "no tiene sentido", "sin sentido", "incoheren*", "mal me entiendo", "no se entiende", "no entiende", "extrañ*", "raro", "loco", "locura", "incomprensible"]}, {"ok": "Explicas que se alegra de su propio dolor.", "falta": "¿Qué siente el amante al verse despedazar? Fíjate en «huelgo».", "claves": ["huelg*", "holga*", "alegr*", "gust*", "placer*", "contento", "content*", "disfrut*", "goza*", "goce", "feliz*", "felicidad", "satisfac*", "agrad*", "complac*", "regocij*"]}, {"ok": "Relacionas esa alegría con el miedo a caer y morir.", "falta": "¿Qué le pasaría si dejara de agarrarse a la espada?", "claves": ["muerte", "muer*", "morir*", "muriendo", "fallec*", "perec*", "fin de la vida", "fin de su vida", "acabar con su vida", "quitarle la vida", "perder la vida", "mata*", "matar*", "asesin*", "devor*", "tumba", "sepul*", "no sobrevivi*", "dejar de vivir", "dejaria de vivir", "deceso", "defuncion", "fatal*", "mortal*", "fiera", "caer", "caida", "soltar*", "soltaria*"]}, {"ok": "Lo relacionas con un rasgo del petrarquismo.", "falta": "¿Qué rasgo del petrarquismo de la introducción describe esta actitud?", "claves": ["petrarc*", "dulce mal", "vivir muriendo", "vivo muriendo", "dolor querido", "amor como sufrimiento", "sufrimiento querido", "ama su sufrimiento", "ama su dolor", "no quiere dejar de sufrir", "no quiere renunciar", "introduccion", "paradojas", "contrarios", "fuego y hielo", "tradicion"]}],
+          propuesta: "El amante reconoce que su conducta es absurda («qué mal me entiendo»): se alegra de despedazarse con la espada porque, si se soltara, caería en la boca de la fiera y la muerte acabaría con su «mal». Como ama su sufrimiento amoroso, prefiere conservarlo aunque lo destruya. Es la paradoja petrarquista del dolor querido, del vivir muriendo." }
+      ]
+    }
+  ]
+};
+</script>
+
+<script>
+/* ================== Motor de la unidad ================== */
+const KEY = "poesia-nh:" + UNIDAD.id;
+/* Dirección del programa de Google Apps Script que registra la entrega y envía el correo.
+   Vacía = sin envío por correo (solo copiar y pegar en Classroom). */
+const ENVIO_URL = "https://script.google.com/macros/s/AKfycbz8dqtzad4ixdcs4DVkKF_5JpuAGsbVMPSFRCYp3pGJ-VWFY5Ftb713__A-3B2dBiSY/exec";
+const correoValido = c => /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test((c || "").trim());
+const VERSOS = UNIDAD.poema.flat();
+const QS = {};
+UNIDAD.partes.forEach((p, pi) => p.preguntas.forEach((q, qi) => { q.parte = pi; q.n = qi + 1; QS[q.id] = q; }));
+const N_PARTES = UNIDAD.partes.length; // la pestaña final de entrega es N_PARTES
+
+let S = { nombre: "", correo: "", r: {}, sec: 0 };
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function st(id) { return S.r[id] || (S.r[id] = {}); }
+function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+function strip(h) { return String(h).replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " "); }
+function norm(s) { return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+function tokens(line) {
+  return line.split(" ").map(t => { const m = t.match(/^([¡¿«"]*)(.*?)([.,;:!?…»"]*)$/); return { pre: m[1], w: m[2], post: m[3] }; });
+}
+const isDone = q => !!(S.r[q.id] && S.r[q.id].done);
+/* una pregunta cuenta como respondida si se guardó o, en las que se corrigen solas, si se intentó al menos una vez */
+const answered = q => { const s = S.r[q.id]; return !!s && (!!s.done || (["opcion", "numero", "rima", "silabas", "acentos", "acepcion", "corta", "oposicion"].includes(q.tipo) && s.intentos > 0)); };
+const pendientes = i => UNIDAD.partes[i].preguntas.filter(q => !answered(q)).length;
+const unlocked = i => { for (let k = 0; k < Math.min(i, N_PARTES); k++) if (pendientes(k)) return false; return true; };
+const AUTO = ["opcion", "numero", "rima", "silabas", "acentos", "acepcion", "corta", "oposicion"];
+/* ejercicio «oposicion»: marcar en q.rango los términos del lado contrario a q.dados */
+const VACIAS = ["a", "al", "de", "del", "el", "la", "lo", "los", "las", "en", "que", "si", "no", "y", "todo"];
+const esDado = (q, ln, w) => q.dados.some(d => d.v === ln && norm(d.p) === norm(w));
+function oposicionRes(q, m) {
+  const ks = Object.keys(m || {});
+  const hit = t => ks.some(k => +k.split("-")[0] === t.v && t.palabras.some(p => norm(p) === norm(tokWord(k))));
+  const enTermino = k => q.terminos.some(t => +k.split("-")[0] === t.v && t.palabras.some(p => norm(p) === norm(tokWord(k))));
+  return { found: q.terminos.filter(hit), missed: q.terminos.filter(t => !hit(t)), extra: sortKeys(ks.filter(k => !enTermino(k) && !VACIAS.includes(norm(tokWord(k))))) };
+}
+function sortKeys(ks) { return ks.slice().sort((a, b) => { const [la, wa] = a.split("-").map(Number), [lb, wb] = b.split("-").map(Number); return la - lb || wa - wb; }); }
+function tokWord(k) { const [l, w] = k.split("-").map(Number); return tokens(VERSOS[l - 1])[w].w; }
+/* qué términos de la unidad encontró el alumno y qué marcó de más */
+function seleccionRes(q, m) {
+  const ks = Object.keys(m || {});
+  const hit = t => ks.filter(k => +k.split("-")[0] === t.v && t.palabras.some(p => norm(p) === norm(tokWord(k))));
+  const used = new Set(), found = [], missed = [];
+  q.terminos.forEach(t => { const h = hit(t); h.forEach(k => used.add(k)); (h.length ? found : missed).push(t); });
+  return { found, missed, extra: sortKeys(ks.filter(k => !used.has(k))) };
+}
+const enNota = (ln, w) => (UNIDAD.notas || []).some(n => n.v === ln && norm(n.termino).split(/[^a-zñ]+/).includes(norm(w)));
+function pickPoem(q, m, done) {
+  let n = 0;
+  return UNIDAD.poema.map(est => '<div class="stanza">' + est.map(v => {
+    const ln = ++n;
+    return tokens(v).map((t, wi) => {
+      const k = ln + "-" + wi;
+      if (q.tipo === "seleccion" && enNota(ln, t.w)) return `${esc(t.pre)}<span class="tok-nota" title="Ya la explica una nota de la edición">${esc(t.w)}</span>${esc(t.post)}`;
+      return `${esc(t.pre)}<button class="tok ${k in m ? "on" : ""}" data-act="tok" data-q="${q.id}" data-k="${k}" aria-pressed="${k in m}" ${done ? "disabled" : ""}>${esc(t.w)}</button>${esc(t.post)}`;
+    }).join(" ");
+  }).join("<br>") + "</div>").join("");
+}
+function simil(a, b) {
+  const w = s => norm(s).replace(/[^a-zñ\s]/g, " ").split(/\s+/).filter(Boolean);
+  const A = w(a), B = w(b); if (!A.length) return 0;
+  const pool = A.slice(); let hits = 0;
+  B.forEach(x => { const i = pool.indexOf(x); if (i >= 0) { hits++; pool.splice(i, 1); } });
+  return A.length > B.length * 2 ? 0 : hits / B.length;
+}
+const isL = c => /\p{L}/u.test(c);
+function firstL(v) { for (let i = 0; i < v.length; i++) if (isL(v[i])) return i; return 0; }
+/* inicios de sílaba (índices de letra) a partir de la solución con barras */
+function solB(q) { const out = []; let vi = 0, pend = false; for (const c of q.solucion) { if (c === "|") { pend = true; continue; } if (pend && isL(c)) { out.push(vi); pend = false; } vi++; } return out; }
+function sylOf(v, B) {
+  const syl = []; let n = 0; const f = firstL(v);
+  for (let i = 0; i < v.length; i++) if (isL(v[i])) { if (i === f || B.has(i)) n++; syl[i] = n; }
+  for (let i = 0; i < v.length; i++) if (!isL(v[i])) {
+    let p = i - 1; while (p >= 0 && !isL(v[p])) p--;
+    let x = i + 1; while (x < v.length && !isL(v[x])) x++;
+    syl[i] = p >= 0 && x < v.length && syl[p] === syl[x] ? syl[p] : 0;
+  }
+  return { syl, n };
+}
+function divText(v, B) {
+  const { syl } = sylOf(v, B); let out = "", prev = 0;
+  for (let i = 0; i < v.length; i++) { const c = v[i];
+    if (isL(c)) { if (prev && syl[i] !== prev) out += "-"; out += c; prev = syl[i]; }
+    else if (c === " " && syl[i]) out += "‿"; }
+  return out;
+}
+
+/* ---------- encabezado y poema ---------- */
+document.getElementById("eyebrow").textContent = UNIDAD.curso + " · " + UNIDAD.bloque;
+document.getElementById("course").textContent = UNIDAD.programa + " · Profesor: " + UNIDAD.profesor;
+document.getElementById("title").innerHTML = "<em>" + esc(UNIDAD.titulo) + "</em>";
+document.getElementById("byline").textContent = UNIDAD.autor;
+const nombre = document.getElementById("nombre"), correo = document.getElementById("correo");
+nombre.value = S.nombre; correo.value = S.correo || "";
+nombre.addEventListener("input", () => { S.nombre = nombre.value; save(); if (S.sec === N_PARTES) renderReport(); });
+correo.addEventListener("input", () => { S.correo = correo.value; save(); if (S.sec === N_PARTES) renderReport(); });
+
+(function renderPoem() {
+  let n = 0;
+  const html = UNIDAD.poema.map(est => '<div class="stanza">' + est.map(v => { n++; return `<div class="vl"><span class="vn">${n}</span><span>${esc(v)}</span></div>`; }).join("") + "</div>").join("");
+  document.getElementById("poemBody").innerHTML =
+    `${UNIDAD.rotulo ? `<p class="poem-title">${esc(UNIDAD.rotulo)}</p>` : ""}<div class="poem">${html}</div>${UNIDAD.poemaNota ? `<p class="poema-nota">${esc(UNIDAD.poemaNota)}</p>` : ""}${UNIDAD.notas ? `<div class="notas"><p class="notas-t">Notas</p><dl>${UNIDAD.notas.map(n => `<dt>v. ${n.v} · ${esc(n.termino)}</dt><dd>${esc(n.nota)}</dd>`).join("")}</dl></div>` : ""}<p class="ref">${UNIDAD.referencia}</p>`;
+  if (window.matchMedia("(min-width: 901px)").matches) document.getElementById("poemCard").open = true;
+})();
+
+/* ---------- pestañas ---------- */
+function renderTabs() {
+  const items = UNIDAD.partes.map((p, i) => {
+    const done = p.preguntas.filter(answered).length, tot = p.preguntas.length, lk = !unlocked(i);
+    return `<button class="tab ${lk ? "locked" : ""}" data-act="nav" data-i="${i}" aria-current="${S.sec === i}" ${lk ? 'aria-disabled="true" title="Responde primero las partes anteriores"' : ""}>${i + 1}. ${esc(p.nombre)} <span class="count ${done === tot ? "full" : ""}">${done}/${tot}</span></button>`;
+  });
+  const lkE = !unlocked(N_PARTES);
+  items.push(`<button class="tab ${lkE ? "locked" : ""}" data-act="nav" data-i="${N_PARTES}" aria-current="${S.sec === N_PARTES}" ${lkE ? 'aria-disabled="true" title="Responde todas las preguntas para entregar"' : ""}>Entrega</button>`);
+  document.getElementById("tabs").innerHTML = items.join("");
+}
+
+/* ---------- preguntas ---------- */
+function quote(q) {
+  if (!q.versos) return "";
+  return `<p class="verse-quote">${q.versos.map(n => esc(VERSOS[n - 1])).join("<br>")}</p>`;
+}
+function head(q, tag) {
+  return `<div class="q-head"><span class="q-num">${q.n}</span><p>${q.enunciado}</p>${tag ? `<span class="tag">${tag}</span>` : ""}</div>`;
+}
+function renderQ(q) {
+  const s = st(q.id), done = !!s.done;
+  if (q.tipo === "acepcion" && !q.enunciado) q.enunciado = `«${esc(q.forma)}» (v. ${q.verso}). Busca: <b>${esc(q.lema)}</b>`;
+  if (q.requiere && !isDone(QS[q.requiere])) return `<div class="q locked-q" id="q-${q.id}">${head(q, "")}<p class="locked-msg">Se abrirá cuando respondas la pregunta ${QS[q.requiere].n}.</p></div>`;
+  let body = "";
+  if (q.tipo === "opcion") {
+    body = `<div class="opts">${q.opciones.map((o, i) => {
+      let cls = done ? "locked" : "";
+      if (done && i === q.correcta) cls += " right";
+      else if (done && s.sel === i) cls += " wrong";
+      return `<label class="opt ${cls}"><input type="radio" name="${q.id}" value="${i}" ${s.sel === i ? "checked" : ""} ${done ? "disabled" : ""}><span>${o}</span></label>`;
+    }).join("")}</div>`;
+    body += feedback(q, s, 2);
+  } else if (q.tipo === "numero") {
+    body = `<p class="verse-quote">${esc(VERSOS[q.verso - 1])}</p>
+      <div class="row"><label for="n-${q.id}">Sílabas métricas</label><input class="num" id="n-${q.id}" type="number" min="1" max="20" inputmode="numeric" value="${s.val ?? ""}" ${done ? "disabled" : ""}></div>`;
+    body += feedback(q, s, 3);
+  } else if (q.tipo === "oposicion") {
+    const m = s.marcadas || {}, showSol = done && !s.ok;
+    let n = 0, html = "";
+    UNIDAD.poema.forEach(est => est.forEach(v => {
+      const ln = ++n; if (ln < q.rango[0] || ln > q.rango[1]) return;
+      html += `<span class="vn-inline">${ln}</span>` + tokens(v).map((t, wi) => {
+        const k = ln + "-" + wi;
+        if (esDado(q, ln, t.w)) return `${esc(t.pre)}<span class="tok-dado" title="Este ya está del lado de la vigilancia">${esc(t.w)}</span>${esc(t.post)}`;
+        const on = showSol ? q.terminos.some(x => x.v === ln && x.palabras.some(p => norm(p) === norm(t.w))) : k in m;
+        return `${esc(t.pre)}<button class="tok ${on ? "on" : ""}" data-act="tok" data-q="${q.id}" data-k="${k}" aria-pressed="${on}" ${done ? "disabled" : ""}>${esc(t.w)}</button>${esc(t.post)}`;
+      }).join(" ") + "<br>";
+    }));
+    body = `<p class="leyenda"><span class="tok-dado">Así</span> aparecen los términos del lado de la vigilancia. Haz clic en los del lado contrario.</p><div class="pick">${html}</div>` + feedback(q, s, 3);
+  } else if (q.tipo === "corta") {
+    body = quote(q) + `<input class="txt" id="c-${q.id}" data-q="${q.id}" data-f="texto" value="${esc(s.texto || "")}" placeholder="Escribe el sujeto" autocomplete="off" ${done ? "readonly" : ""}>` + feedback(q, s, 3);
+  } else if (q.tipo === "silabas") {
+    const v = VERSOS[q.verso - 1], showSol = done && !s.ok, f = firstL(v);
+    const B = new Set(showSol ? solB(q) : (s.b || [])), { syl, n } = sylOf(v, B);
+    let html = "", word = "";
+    const flush = () => { if (word) { html += `<span class="w">${word}</span>`; word = ""; } };
+    for (let i = 0; i < v.length; i++) {
+      const c = v[i];
+      if (c === " ") { flush(); html += `<span class="sp ${syl[i] ? (syl[i] % 2 ? "a" : "b") : ""}"> </span>`; }
+      else if (isL(c)) {
+        const start = i === f || B.has(i);
+        word += `<button class="ch ${syl[i] % 2 ? "a" : "b"} ${start ? "start" : ""}" data-act="ch" data-q="${q.id}" data-i="${i}" ${start ? `data-n="${syl[i]}"` : ""} aria-pressed="${start}" aria-label="${esc(c)}${start ? ", inicio de la sílaba " + syl[i] : ""}" ${done || i === f ? "disabled" : ""}>${esc(c)}</button>`;
+      } else word += `<span class="pu">${esc(c)}</span>`;
+    }
+    flush();
+    body = `<div class="syl-line">${html}</div><p class="syl-count">${showSol ? "División correcta" : "Tu división"}: <strong>${n} ${n === 1 ? "sílaba" : "sílabas"}</strong></p>` + feedback(q, s, 3);
+  } else if (q.tipo === "acentos") {
+    const showSol = done && !s.ok, sel = new Set(showSol ? q.tonicas : (s.sel || []));
+    body = quote(q) + `<div class="acc-row">${q.silabas.map((t, i) => `<button class="acc ${sel.has(i + 1) ? "on" : ""}" data-act="acc" data-q="${q.id}" data-i="${i + 1}" aria-pressed="${sel.has(i + 1)}" ${done ? "disabled" : ""}>${esc(t)}<small>${i + 1}</small></button>`).join("")}</div>
+      <div class="row"><label for="a-${q.id}">Tipo de endecasílabo</label><select id="a-${q.id}" data-tipo="${q.id}" ${done ? "disabled" : ""}><option value=""></option>${q.tipos.map(t => `<option ${(showSol ? q.tipoCorrecto : s.tipo) === t ? "selected" : ""}>${t}</option>`).join("")}</select></div>`;
+    body += feedback(q, s, 3);
+  } else if (q.tipo === "rima") {
+    const ok = s.res || [], idx = rimaIdx(q), L = q.minusculas ? "abcdef" : "ABCDEF";
+    let rows = "", n = 0, primera = true;
+    UNIDAD.poema.forEach((est, ei) => {
+      let gap = !primera;
+      est.forEach(v => {
+        const i = n++;
+        if (!idx.includes(i)) return;
+        if (gap) { rows += '<div class="gap"></div>'; gap = false; }
+        primera = false;
+        const t = tokens(v), last = t[t.length - 1];
+        const first = t.slice(0, -1).map(x => x.pre + x.w + x.post).join(" ");
+        const sel = (s.letras || [])[i] || "";
+        const mk = s.intentos ? (ok[i] ? '<span class="mk y" aria-label="correcto">✓</span>' : '<span class="mk n" aria-label="incorrecto">✗</span>') : "<span></span>";
+        rows += `<span class="vn">${i + 1}</span><span>${esc(first)} ${esc(last.pre)}<mark>${esc(last.w)}</mark>${esc(last.post)}</span>
+          <select data-rima="${q.id}" data-i="${i}" aria-label="Rima del verso ${i + 1}" ${done ? "disabled" : ""}><option value=""></option>${L.split("").map(l => `<option ${sel === l ? "selected" : ""}>${l}</option>`).join("")}</select>${mk}`;
+      });
+    });
+    body = `<div class="rhyme">${rows}</div>` + feedback(q, s, 3);
+  } else if (q.tipo === "abierta") {
+    body = quote(q) + `<textarea id="t-${q.id}" data-q="${q.id}" data-f="texto" placeholder="Escribe tu respuesta" ${done ? "readonly" : ""}>${esc(s.texto || "")}</textarea>`;
+    if (q.ideas && (s.revisado || done)) body += ideasFb(q, done ? s.texto : s.revisado);
+    if (!done) body += `<div class="row">${q.ideas ? `<button class="btn ghost" data-act="ideas" data-q="${q.id}">${s.revisado ? "Revisar de nuevo" : "Revisar mi respuesta"}</button>` : ""}<button class="btn" data-act="save" data-q="${q.id}">${q.propuesta ? "Guardar y ver una respuesta posible" : "Guardar respuesta"}</button>${s.msg ? `<span class="fb bad">${esc(s.msg)}</span>` : ""}</div>`;
+    else body += q.propuesta ? `<div class="fb info"><span class="label">Una respuesta posible</span><p class="model">${q.propuesta}</p></div>` : `<div class="fb ok"><p>Respuesta guardada.</p></div>`;
+  } else if (q.tipo === "diccionario") {
+    const it = s.items || {};
+    body = `<p style="margin:0">Consulta el <a href="https://apps2.rae.es/DA.html" target="_blank" rel="noopener">Diccionario de Autoridades</a> (RAE, 1726–1739). Busca por el infinitivo o la forma de diccionario indicada.</p>
+      <div class="dict">${q.palabras.map((p, i) => {
+        const v = it[i] || {};
+        return `<div class="dict-item"><h4>«${esc(p.forma)}» <span>v. ${p.verso} · busca: ${esc(p.lema)}</span></h4>
+          <label for="d-${q.id}-${i}-def">Acepción de Autoridades<textarea id="d-${q.id}-${i}-def" data-q="${q.id}" data-f="def" data-i="${i}" ${done ? "readonly" : ""}>${esc(v.def || "")}</textarea></label>
+          <label for="d-${q.id}-${i}-sen">Qué significa en el verso<textarea id="d-${q.id}-${i}-sen" data-q="${q.id}" data-f="sen" data-i="${i}" ${done ? "readonly" : ""}>${esc(v.sen || "")}</textarea></label></div>`;
+      }).join("")}</div>`;
+    if (!done) body += `<div class="row"><button class="btn" data-act="save" data-q="${q.id}">Guardar definiciones</button>${s.msg ? `<span class="fb bad">${esc(s.msg)}</span>` : ""}</div>`;
+    else body += `<div class="fb ok"><p>Definiciones guardadas. Tu profesor las revisará.</p></div>`;
+  } else if (q.tipo === "seleccion") {
+    const m = s.marcadas || {};
+    body = `${UNIDAD.notas ? `<p class="leyenda"><span class="tok-nota">Así</span> aparecen las palabras que ya explican las notas de la edición de Tenorio, debajo del poema: no hace falta marcarlas.</p>` : ""}<div class="pick">${pickPoem(q, m, done)}</div><p class="syl-count">Has marcado <strong>${Object.keys(m).length}</strong>.</p>`;
+    if (!done) body += `<div class="row"><button class="btn" data-act="save" data-q="${q.id}">Guardar y comparar</button>${s.msg ? `<span class="fb bad">${esc(s.msg)}</span>` : ""}</div>`;
+    else {
+      const r = seleccionRes(q, m);
+      body += `<div class="fb info"><span class="label">Palabras que vas a buscar</span>
+        <p>Encontraste <strong>${r.found.length} de ${q.terminos.length}</strong>${r.found.length ? ": " + r.found.map(t => "«" + esc(t.forma) + "»").join(", ") : ""}.</p>
+        ${r.missed.length ? `<p>Te faltaron: ${r.missed.map(t => "«" + esc(t.forma) + "» (v. " + t.v + ")").join(", ")}.</p>` : ""}
+        ${(() => {
+          const enNotas = k => (UNIDAD.notas || []).some(n => +k.split("-")[0] === n.v && norm(n.termino).split(/[^a-zñ]+/).includes(norm(tokWord(k))));
+          const a = r.extra.filter(enNotas), b = r.extra.filter(k => !enNotas(k)), lst = ks => ks.map(k => "«" + esc(tokWord(k)) + "»").join(", ");
+          return (a.length ? `<p>Bien visto: ${lst(a)} también ${a.length === 1 ? "es difícil, pero ya la explican" : "son difíciles, pero ya las explican"} las notas, debajo del poema.</p>` : "")
+            + (b.length ? `<p>También marcaste ${lst(b)}; no hace falta ${b.length === 1 ? "buscarla" : "buscarlas"} en esta unidad.</p>` : "");
+        })()}
+        <p>${q.despues || "Todas las palabras de la lista te esperan en la pestaña «Vocabulario»."}</p></div>`;
+    }
+  } else if (q.tipo === "acepcion") {
+    body = `<p class="verse-quote">${esc(VERSOS[q.verso - 1])}</p>`;
+    if (q.modo === "abierto") {
+      body += `<label for="t-${q.id}" style="font-size:14px">Busca la palabra en Autoridades y explica con tus palabras qué significa en este verso</label><textarea id="t-${q.id}" data-q="${q.id}" data-f="texto" ${done ? "readonly" : ""} style="min-height:72px">${esc(s.texto || "")}</textarea>`;
+      if (!done) body += `<div class="row"><button class="btn" data-act="save" data-q="${q.id}">Guardar y ver una respuesta posible</button>${s.msg ? `<span class="fb bad">${esc(s.msg)}</span>` : ""}</div>`;
+      else body += `<div class="fb info"><span class="label">Una respuesta posible</span><p class="model">Autoridades: «${esc(q.acepcion)}»</p><p>${q.explicacion}</p></div>`;
+    } else if (q.opciones) {
+      const intro = q.modo === "interpretar" ? "Elige la interpretación en español moderno que corresponde al verso:" : "Elige la acepción de Autoridades que corresponde al sentido del verso:";
+      body += `<p style="margin:0">${intro}</p><div class="opts">${q.opciones.map((o, i) => {
+        let cls = done ? "locked" : "";
+        if (done && i === q.correcta) cls += " right"; else if (done && s.sel === i) cls += " wrong";
+        return `<label class="opt ${cls}"><input type="radio" name="${q.id}" value="${i}" ${s.sel === i ? "checked" : ""} ${done ? "disabled" : ""}><span class="${q.modo === "interpretar" ? "" : "def"}">${esc(o)}</span></label>`;
+      }).join("")}</div>` + feedback(q, s, 2);
+    } else {
+      body += `<label for="t-${q.id}" style="font-size:14px">Copia la definición de Autoridades</label><textarea id="t-${q.id}" data-q="${q.id}" data-f="texto" ${done ? "readonly" : ""} style="min-height:64px">${esc(s.texto || "")}</textarea>` + feedback(q, s, 3);
+    }
+  } else if (q.tipo === "marcar") {
+    const m = s.marcadas || {};
+    let n = 0;
+    const poem = UNIDAD.poema.map(est => '<div class="stanza">' + est.map(v => {
+      const ln = ++n;
+      return tokens(v).map((t, wi) => {
+        const k = ln + "-" + wi;
+        return `${esc(t.pre)}<button class="tok ${k in m ? "on" : ""}" data-act="tok" data-q="${q.id}" data-k="${k}" aria-pressed="${k in m}" ${done ? "disabled" : ""}>${esc(t.w)}</button>${esc(t.post)}`;
+      }).join(" ");
+    }).join("<br>") + "</div>").join("");
+    const keys = Object.keys(m).sort((a, b) => { const [la, wa] = a.split("-").map(Number), [lb, wb] = b.split("-").map(Number); return la - lb || wa - wb; });
+    const notes = keys.map(k => {
+      const [l, w] = k.split("-").map(Number);
+      return `<div class="note"><label for="m-${q.id}-${k}">${esc(tokens(VERSOS[l - 1])[w].w)} <span>v. ${l}</span></label><textarea id="m-${q.id}-${k}" data-q="${q.id}" data-f="nota" data-k="${k}" placeholder="¿Qué significa en el plano amoroso?" ${done ? "readonly" : ""}>${esc(m[k])}</textarea></div>`;
+    }).join("");
+    body = `<div class="pick">${poem}</div><div class="notes">${notes || '<p style="margin:0;color:var(--muted)">Todavía no has marcado ninguna palabra.</p>'}</div>`;
+    if (!done) body += `<div class="row"><button class="btn" data-act="save" data-q="${q.id}">Guardar y comparar</button>${s.msg ? `<span class="fb bad">${esc(s.msg)}</span>` : ""}</div>`;
+    else {
+      const marked = new Set(keys.map(k => { const [l, w] = k.split("-").map(Number); return l + ":" + norm(tokens(VERSOS[l - 1])[w].w); }));
+      body += `<div class="fb info"><span class="label">Una lectura posible</span>${q.propuesta.map(p =>
+        `<p><strong>${marked.has(p.v + ":" + norm(p.p)) ? "✓ " : ""}${esc(p.p)}</strong> (v. ${p.v}): ${esc(p.n)}</p>`).join("")}<p><em>${esc(q.nota)}</em> Las palabras con ✓ son las que tú también marcaste.</p></div>`;
+    }
+  }
+  const tag = q.propuesta || q.modo === "abierto" ? "Con respuesta modelo" : AUTO.includes(q.tipo) || q.tipo === "seleccion" ? "Respuesta inmediata" : "La revisa tu profesor";
+  return `<div class="q ${done ? "done" : ""}" id="q-${q.id}">${head(q, tag)}${q.tipo === "opcion" ? quote(q) : ""}${body}</div>${done && q.extra ? extraCard(q.extra) : ""}`;
+}
+/* «¿Sabías que…?»: aparece al terminar una pregunta. En GitHub Pages el video se ve en la página;
+   dentro de Claude no se pueden incrustar videos, así que se muestra un enlace. */
+function extraCard(x) {
+  const v = x.video;
+  const media = !v ? "" : ENVIO_URL
+    ? `<div class="video"><iframe src="https://www.youtube-nocookie.com/embed/${v.id}" title="${esc(v.titulo)}" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`
+    : `<a class="video-link" href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span><span><strong>${esc(v.titulo)}</strong><br>Escuchar en YouTube</span></a>`;
+  return `<aside class="extra"><p class="extra-eyebrow">¿Sabías que…?</p><h3>${esc(x.titulo)}</h3>${x.texto}${media}</aside>`;
+}
+function feedback(q, s, max) {
+  let out = "";
+  if (s.done) {
+    const correct = q.tipo === "opcion" ? esc(strip(q.opciones[q.correcta]))
+      : q.tipo === "numero" ? q.correcta
+      : q.tipo === "silabas" ? esc(divText(VERSOS[q.verso - 1], new Set(solB(q))))
+      : q.tipo === "acepcion" ? esc(q.opciones ? q.opciones[q.correcta] : q.acepcion)
+      : q.tipo === "corta" ? q.respuesta
+      : q.tipo === "oposicion" ? q.terminos.map(t => "«" + esc(t.forma) + "»").join(", ")
+      : q.tipo === "acentos" ? `sílabas ${q.tonicas.join(", ")}; endecasílabo ${q.tipoCorrecto}`
+      : fmtRima(q, q.correcta);
+    out = s.ok
+      ? `<div class="fb ok"><p><strong>Correcto.</strong></p><p>${q.explicacion}</p></div>`
+      : `<div class="fb bad">${diag(q, s)}<p><strong>La respuesta correcta es: ${correct}.</strong></p><p>${q.explicacion}</p></div>`;
+  } else {
+    if (s.intentos) out = `<div class="fb bad"><p><strong>Todavía no.</strong></p>${diag(q, s)}${q.pista && s.intentos >= 1 ? `<p>Pista: ${q.pista}</p>` : ""}<p>${max - s.intentos === 1 ? "Te queda 1 intento; después verás la respuesta." : "Puedes intentarlo " + (max - s.intentos) + " veces más."}</p></div>`;
+    out += `<div class="row"><button class="btn" data-act="check" data-q="${q.id}">Comprobar</button>${s.msg ? `<span class="fb bad">${esc(s.msg)}</span>` : ""}</div>`;
+  }
+  return out;
+}
+/* explica por qué la última respuesta no es correcta */
+/* comentario según las ideas clave que aparecen en una respuesta abierta */
+function ideasFb(q, text) {
+  const T = " " + norm(text || "").replace(/[^a-zñ0-9]+/g, " ").trim() + " ";
+  const has = c => { c = norm(c).replace(/[^a-zñ0-9* ]+/g, " ").trim(); const star = c.endsWith("*"); c = c.replace(/\*$/, ""); return star ? T.includes(" " + c) : T.includes(" " + c + " "); };
+  const items = q.ideas.map(i => {
+    if (i.conserva) {
+      const miss = i.conserva.filter(w => !has(w));
+      return miss.length
+        ? `<li class="no">Revisa si conservaste estas palabras del poema: ${miss.map(w => "«" + esc(w) + "»").join(", ")}. Al prosificar mantenemos los sustantivos, verbos, adjetivos y adverbios.</li>`
+        : `<li class="si">Conservaste las palabras del poema.</li>`;
+    }
+    return i.claves.some(has) ? `<li class="si">${esc(i.ok)}</li>` : `<li class="no">${esc(i.falta)}</li>`;
+  });
+  return `<div class="fb info ideas"><span class="label">Sobre tu respuesta</span><ul>${items.join("")}</ul></div>`;
+}
+function diag(q, s) {
+  const P = t => `<p>${t}</p>`;
+  if ((q.tipo === "opcion" || (q.tipo === "acepcion" && q.opciones)) && q.porque && q.porque[s.sel]) return P(q.porque[s.sel]);
+  if (q.tipo === "acepcion" && q.modo === "copiar") return P(`Tu texto no coincide con la definición. Comprueba que buscaste «${esc(q.lema)}» y copia la acepción completa, desde el principio hasta antes de «Latín».`);
+  if (q.tipo === "oposicion") {
+    const r = oposicionRes(q, s.marcadas);
+    return (r.found.length ? P(`Bien: ${r.found.map(t => "«" + esc(t.forma) + "»").join(", ")}.`) : "")
+      + (r.missed.length ? P(`Te ${r.missed.length === 1 ? "falta 1 elemento" : "faltan " + r.missed.length + " elementos"}. ${esc(q.pistaFalta || "")}`) : "")
+      + (r.extra.length ? P(`${r.extra.map(k => "«" + esc(tokWord(k)) + "»").join(", ")} no ${r.extra.length === 1 ? "está" : "están"} del lado contrario.`) : "");
+  }
+  if (q.tipo === "corta") {
+    const w = norm(s.texto || "").split(/[^a-zñ]+/);
+    const e = q.errores.find(x => x.claves.some(c => w.includes(norm(c))));
+    return P(e ? e.porque : q.generico);
+  }
+  if (q.tipo === "rima") return P("Los versos marcados con ✗ no tienen la letra que les toca. Compara cómo terminan, desde la última vocal acentuada, y recuerda que la primera rima que aparece es la A, la segunda la B, etc.");
+  if (q.tipo === "silabas") {
+    const v = VERSOS[q.verso - 1], sol = solB(q), b = s.b || [], msgs = [];
+    const wordAt = i => { let a = i, z = i; while (a > 0 && v[a - 1] !== " ") a--; while (z < v.length && v[z] !== " ") z++; return v.slice(a, z).replace(/[¡!¿?,.;:…«»]/g, ""); };
+    const prevWord = i => { let k = i - 1; while (k >= 0 && v[k] === " ") k--; return wordAt(k); };
+    const pausa = i => { let k = i - 1; while (k >= 0 && !isL(v[k])) { if (/[,;:.!?…]/.test(v[k])) return true; k--; } return false; };
+    const atWordStart = i => { let k = i - 1; while (k >= 0 && !isL(v[k]) && v[k] !== " ") k--; return k >= 0 && v[k] === " "; };
+    b.filter(i => !sol.includes(i)).sort((x, y) => x - y).forEach(i => msgs.push(atWordStart(i)
+      ? `Entre «${esc(prevWord(i))}» y «${esc(wordAt(i))}» hay sinalefa: esas dos vocales se pronuncian en una sola sílaba.`
+      : `Sobra una división dentro de «${esc(wordAt(i))}». ¿Hay ahí un diptongo, o una consonante que va con la vocal siguiente?`));
+    sol.filter(i => !b.includes(i)).sort((x, y) => x - y).forEach(i => msgs.push(atWordStart(i)
+      ? `«${esc(prevWord(i))}» y «${esc(wordAt(i))}» van en sílabas distintas: ${!(/[aeiouáéíóúy]h?$/i.test(prevWord(i)) && /^h?[aeiouáéíóú]/i.test(wordAt(i))) ? "no hay dos vocales en contacto, así que no puede haber sinalefa." : pausa(i) ? "la pausa que marca la puntuación impide la sinalefa." : "aquí las vocales no se unen en una sola sílaba."}`
+      : `Falta separar una sílaba dentro de «${esc(wordAt(i))}».`));
+    return msgs.map(P).join("");
+  }
+  if (q.tipo === "acentos") {
+    const sel = s.sel || [], opt = q.opcionales || [], msgs = [];
+    sel.filter(x => !q.tonicas.includes(x) && !opt.includes(x)).sort((x, y) => x - y).forEach(x => msgs.push(`La sílaba «${esc(q.silabas[x - 1])}» (${x}.ª) no lleva un acento principal: puede ser átona o pertenecer a una palabra átona.`));
+    const miss = q.tonicas.filter(x => !sel.includes(x));
+    if (miss.includes(10)) msgs.push("Recuerda que el endecasílabo siempre lleva acento en la 10.ª sílaba.");
+    if (miss.some(x => x !== 10)) msgs.push(`Te falta${miss.filter(x => x !== 10).length > 1 ? "n" : ""} ${miss.filter(x => x !== 10).length} acento${miss.filter(x => x !== 10).length > 1 ? "s" : ""}: busca la sílaba tónica de los sustantivos, adjetivos y verbos.`);
+    if (!msgs.length && s.tipo !== q.tipoCorrecto) msgs.push(`Los acentos están bien, pero el tipo no corresponde: con acentos en ${q.tonicas.join(".ª, ")}.ª, revisa la lista de tipos de la lectura.`);
+    return msgs.map(P).join("");
+  }
+  return "";
+}
+function rerender(id) {
+  if (Object.values(QS).some(x => x.requiere === id && x.parte === QS[id].parte)) { const y = scrollY; renderTabs(); renderPart(); scrollTo(0, y); return; }
+  const el = document.getElementById("q-" + id);
+  if (el && el.nextElementSibling && el.nextElementSibling.matches("aside.extra")) el.nextElementSibling.remove();
+  if (el) el.outerHTML = renderQ(QS[id]);
+  renderTabs(); renderNext();
+}
+/* versos que entran en el ejercicio de rima (todos, o el intervalo q.rango = [desde, hasta]) */
+function rimaIdx(q) { const a = q.rango ? q.rango[0] - 1 : 0, b = q.rango ? q.rango[1] - 1 : VERSOS.length - 1; return VERSOS.map((_, i) => i).filter(i => i >= a && i <= b); }
+function fmtRima(q, str) { let out = "", k = 0; (q.grupos || [str.length]).forEach(g => { out += (out ? " " : "") + str.slice(k, k + g); k += g; }); return q.minusculas ? out.toLowerCase() : out; }
+function schemeNorm(arr) {
+  const map = {}; let next = 0;
+  return arr.map(l => { if (!l) return ""; if (!(l in map)) map[l] = "ABCDEF"[next++]; return map[l]; });
+}
+
+function check(q) {
+  const s = st(q.id); s.msg = "";
+  if (q.tipo === "opcion") {
+    const c = document.querySelector(`input[name="${q.id}"]:checked`);
+    if (!c) { s.msg = "Elige una opción."; return; }
+    s.sel = +c.value; s.intentos = (s.intentos || 0) + 1; s.ok = s.sel === q.correcta; s.done = s.ok || s.intentos >= 2;
+  } else if (q.tipo === "numero") {
+    const v = parseInt(document.getElementById("n-" + q.id).value, 10);
+    if (!v) { s.msg = "Escribe un número."; return; }
+    s.val = v; s.intentos = (s.intentos || 0) + 1; s.ok = v === q.correcta; s.done = s.ok || s.intentos >= 3;
+  } else if (q.tipo === "oposicion") {
+    if (!Object.keys(s.marcadas || {}).length) { s.msg = "Marca al menos una palabra."; return; }
+    const r = oposicionRes(q, s.marcadas);
+    s.intentos = (s.intentos || 0) + 1; s.ok = !r.missed.length && !r.extra.length; s.done = s.ok || s.intentos >= 3;
+  } else if (q.tipo === "corta") {
+    const w = norm(s.texto || "").split(/[^a-zñ]+/).filter(Boolean);
+    if (!w.length) { s.msg = "Escribe tu respuesta."; return; }
+    s.intentos = (s.intentos || 0) + 1; s.ok = w.some(x => q.aceptadas.includes(x)); s.done = s.ok || s.intentos >= 3;
+  } else if (q.tipo === "acepcion") {
+    if (q.opciones) {
+      const c = document.querySelector(`input[name="${q.id}"]:checked`);
+      if (!c) { s.msg = "Elige una acepción."; return; }
+      s.sel = +c.value; s.intentos = (s.intentos || 0) + 1; s.ok = s.sel === q.correcta; s.done = s.ok || s.intentos >= 2;
+    } else {
+      if (!(s.texto || "").trim()) { s.msg = "Escribe algo antes de comprobar."; return; }
+      s.intentos = (s.intentos || 0) + 1; s.ok = simil(s.texto, q.acepcion) >= 0.75; s.done = s.ok || s.intentos >= 3;
+    }
+  } else if (q.tipo === "silabas") {
+    if (!(s.b || []).length) { s.msg = "Marca dónde empieza cada sílaba."; return; }
+    const sol = solB(q), b = s.b;
+    s.intentos = (s.intentos || 0) + 1; s.ok = sol.length === b.length && sol.every(x => b.includes(x)); s.done = s.ok || s.intentos >= 3;
+  } else if (q.tipo === "acentos") {
+    const sel = s.sel || [];
+    if (!sel.length && !s.tipo) { s.msg = "Marca alguna sílaba o elige un tipo antes de comprobar."; return; }
+    const opt = q.opcionales || [];
+    s.intentos = (s.intentos || 0) + 1;
+    s.ok = q.tonicas.every(x => sel.includes(x)) && sel.every(x => q.tonicas.includes(x) || opt.includes(x)) && s.tipo === q.tipoCorrecto;
+    s.done = s.ok || s.intentos >= 3;
+  } else if (q.tipo === "rima") {
+    const letras = s.letras || [];
+    if (!letras.some(Boolean)) { s.msg = "Asigna al menos una letra antes de comprobar."; return; }
+    const idx = rimaIdx(q), n = schemeNorm(idx.map(i => (letras[i] || "").toUpperCase())), sol = q.correcta.toUpperCase();
+    s.res = []; idx.forEach((i, k) => { s.res[i] = n[k] === sol[k]; });
+    s.intentos = (s.intentos || 0) + 1; s.ok = rimaIdx(q).every(i => s.res[i]); s.done = s.ok || s.intentos >= 3;
+  }
+}
+function saveOpen(q) {
+  const s = st(q.id); s.msg = "";
+  if (q.tipo === "abierta") {
+    if (!(s.texto || "").trim()) { s.msg = "Escribe algo antes de guardar."; return; }
+  } else if (q.tipo === "diccionario") {
+    const it = s.items || {};
+    if (q.palabras.some((_, i) => !(it[i] && (it[i].def || "").trim() && (it[i].sen || "").trim()))) { s.msg = "Completa los dos campos de cada palabra."; return; }
+  } else if (q.tipo === "acepcion") {
+    if (!(s.texto || "").trim()) { s.msg = "Escribe algo antes de guardar."; return; }
+  } else if (q.tipo === "seleccion") {
+    if (!Object.keys(s.marcadas || {}).length) { s.msg = "Marca al menos una palabra."; return; }
+  } else if (q.tipo === "marcar") {
+    const m = s.marcadas || {}, ks = Object.keys(m);
+    if (ks.length < q.minimo) { s.msg = `Marca al menos ${q.minimo} palabras.`; return; }
+    if (ks.some(k => !(m[k] || "").trim())) { s.msg = "Explica cada palabra que marcaste."; return; }
+  }
+  s.done = true; s.fecha = new Date().toISOString();
+}
+
+/* ---------- partes ---------- */
+function renderPart() {
+  const el = document.getElementById("part");
+  if (S.sec === N_PARTES) { renderEntrega(el); return; }
+  const p = UNIDAD.partes[S.sec];
+  el.innerHTML = `<div class="part-head"><p class="eyebrow">Parte ${S.sec + 1} de ${N_PARTES}</p><h2>${esc(p.titulo)}</h2><p class="lead">${esc(p.lead)}</p></div>
+    ${S.sec === 0 && UNIDAD.avisoInicial ? `<div class="aviso">${UNIDAD.avisoInicial}</div>` : ""}
+    ${p.lectura ? `<div class="reading">${p.lectura}</div>` : ""}
+    ${p.requiere && !isDone(QS[p.requiere])
+      ? `<div class="fb info"><p>Primero decide qué palabras hay que buscar: completa la pregunta ${QS[p.requiere].n} de «${esc(UNIDAD.partes[QS[p.requiere].parte].nombre)}».</p><p><button class="btn ghost" data-act="nav" data-i="${QS[p.requiere].parte}">Ir a esa pregunta</button></p></div>`
+      : p.preguntas.map(renderQ).join("")}
+    <div class="next-row" id="nextRow"></div>`;
+  renderNext();
+}
+
+function stats() {
+  const all = Object.values(QS), auto = all.filter(q => AUTO.includes(q.tipo));
+  return {
+    total: all.length, hechas: all.filter(answered).length,
+    auto: auto.length, primera: auto.filter(q => { const s = S.r[q.id]; return s && s.ok && s.intentos === 1; }).length,
+    finalOk: auto.filter(q => { const s = S.r[q.id]; return s && s.ok; }).length
+  };
+}
+function buildReport() {
+  const t = stats(), L = [];
+  L.push(`${UNIDAD.programa} · ${UNIDAD.curso} · ${UNIDAD.bloque}`);
+  L.push(`Profesor: ${UNIDAD.profesor}`);
+  L.push(`UNIDAD: ${UNIDAD.autor}, «${UNIDAD.titulo}»`);
+  L.push(`Texto: ${UNIDAD.referenciaTexto}`);
+  L.push(`Alumno: ${S.nombre.trim() || "(sin nombre)"}    Correo: ${(S.correo || "").trim() || "-"}`);
+  L.push(`Fecha: ${new Date().toLocaleString("es-MX")}`);
+  L.push(`Avance: ${t.hechas}/${t.total} preguntas respondidas`);
+  UNIDAD.partes.forEach((p, pi) => {
+    L.push("", `=== ${pi + 1}. ${p.nombre.toUpperCase()} ===`);
+    p.preguntas.forEach(q => {
+      const s = S.r[q.id] || {};
+      L.push("", `${q.n}. ${strip(q.enunciado)}`);
+      if (!answered(q)) { L.push("   (sin responder)"); return; }
+      if (q.tipo === "opcion") L.push(`   → ${strip(q.opciones[s.sel])}`);
+      else if (q.tipo === "silabas") L.push(`   → ${divText(VERSOS[q.verso - 1], new Set(s.b))}`);
+      else if (q.tipo === "acentos") L.push(`   → sílabas ${[...s.sel].sort((x, y) => x - y).join(", ")}; ${s.tipo}`);
+      else if (q.tipo === "numero") L.push(`   → ${s.val}`);
+      else if (q.tipo === "rima") L.push(`   → ${fmtRima(q, schemeNorm(rimaIdx(q).map(i => ((s.letras || [])[i] || "").toUpperCase())).map(l => l || "_").join(""))}`);
+      else if (q.tipo === "abierta") L.push("   " + (s.texto || "").trim().replace(/\n/g, "\n   "));
+      else if (q.tipo === "diccionario") q.palabras.forEach((w, i) => { const v = (s.items || {})[i] || {}; L.push(`   · ${w.forma} (v. ${w.verso})`, `     Autoridades: ${(v.def || "").trim()}`, `     En el verso: ${(v.sen || "").trim()}`); });
+      else if (q.tipo === "oposicion") L.push(`   → ${sortKeys(Object.keys(s.marcadas || {})).map(tokWord).join(", ")}`);
+      else if (q.tipo === "seleccion") { const r = seleccionRes(q, s.marcadas); L.push(`   Marcó: ${sortKeys(Object.keys(s.marcadas || {})).map(tokWord).join(", ")}`, `   Encontró ${r.found.length} de ${q.terminos.length}. Faltaron: ${r.missed.map(t => t.forma).join(", ") || "ninguna"}`); }
+      else if (q.tipo === "corta") L.push(`   → ${(s.texto || "").trim()}`);
+      else if (q.tipo === "acepcion") L.push(`   → ${q.opciones ? q.opciones[s.sel] : (s.texto || "").trim()}`);
+      else if (q.tipo === "marcar") Object.keys(s.marcadas || {}).sort((a, b) => { const [la, wa] = a.split("-").map(Number), [lb, wb] = b.split("-").map(Number); return la - lb || wa - wb; }).forEach(k => {
+        const [l, w] = k.split("-").map(Number); L.push(`   · ${tokens(VERSOS[l - 1])[w].w} (v. ${l}): ${(s.marcadas[k] || "").trim()}`);
+      });
+    });
+  });
+  return L.join("\n");
+}
+function renderReport() { const r = document.getElementById("report"); if (r) r.value = buildReport(); const w = document.getElementById("nameWarn"); if (w) w.hidden = !!S.nombre.trim() && correoValido(S.correo); const st2 = document.getElementById("sendTo"); if (st2) st2.textContent = (S.correo || "").trim() || "tu correo"; }
+function renderEntrega(el) {
+  const t = stats();
+  const rows = UNIDAD.partes.map((p, i) => { const d = p.preguntas.filter(answered).length, tot = p.preguntas.length;
+    return `<tr><td>${i + 1}. ${esc(p.nombre)}</td><td>${d}/${tot}</td><td><span class="pill ${d === tot ? "ok" : "pend"}">${d === tot ? "Completa" : "Pendiente"}</span></td></tr>`; }).join("");
+  const envio = ENVIO_URL ? `
+    <section class="send" aria-labelledby="sendTitle">
+      <h3 id="sendTitle">1. Envía tus respuestas</h3>
+      <p>Tu profesor recibirá el registro de tu entrega y tú recibirás una copia de tus respuestas en <strong id="sendTo">${esc((S.correo || "").trim() || "tu correo")}</strong>, para que la guardes como evidencia.</p>
+      <div class="row"><button class="btn" data-act="send" id="sendBtn">Enviar mis respuestas</button><span id="sendMsg" role="status">${S.enviado ? "Última entrega: " + esc(new Date(S.enviado).toLocaleString("es-MX")) + "." : ""}</span></div>
+    </section>
+    <h3 class="steps-title">2. Marca la tarea en Classroom</h3>` : "";
+  el.innerHTML = `<div class="part-head"><p class="eyebrow">Último paso</p><h2>Entrega</h2>
+      <p class="lead">${ENVIO_URL ? "Cuando termines, envía tus respuestas desde aquí y después marca la tarea como entregada en Classroom." : "Cuando termines, copia tus respuestas y entrégalas en la tarea de Classroom. Así tu profesor sabe que completaste la actividad y puede revisar tus respuestas abiertas."}</p></div>
+    <table class="summary"><thead><tr><th>Parte</th><th>Respondidas</th><th>Estado</th></tr></thead><tbody>${rows}</tbody></table>
+    ${UNIDAD.avisoFinal ? `<aside class="extra"><p class="extra-eyebrow">Antes de entregar</p><p>${esc(UNIDAD.avisoFinal.texto)}</p><a class="video-link" href="${esc(UNIDAD.avisoFinal.enlace)}" target="_blank" rel="noopener"><span class="doc" aria-hidden="true"></span><span><strong>${esc(UNIDAD.avisoFinal.etiqueta)}</strong><br>Se abre en Google Drive</span></a></aside>` : ""}
+    <div class="fb bad" id="nameWarn" ${S.nombre.trim() && correoValido(S.correo) ? "hidden" : ""}><p>Escribe tu nombre completo y tu correo en la parte superior antes de entregar.</p></div>
+    ${envio}
+    <ol class="steps">
+      ${ENVIO_URL ? `<li>En Classroom, abre la tarea y pulsa <strong>Entregar</strong> (o <strong>Marcar como completada</strong>).</li>
+      <li>Si tu profesor te lo pide, pega también ahí tus respuestas: pulsa <strong>Copiar respuestas</strong>, elige <strong>Añadir o crear → Documentos</strong> y pégalas.</li>`
+      : `<li>Pulsa <strong>Copiar respuestas</strong>.</li>
+      <li>En Classroom, abre la tarea y elige <strong>Añadir o crear → Documentos</strong>.</li>
+      <li>Pega tus respuestas en el documento y vuelve a la tarea.</li>
+      <li>Pulsa <strong>Entregar</strong>.</li>`}
+    </ol>
+    <div class="row"><button class="btn ${ENVIO_URL ? "ghost" : ""}" data-act="copy">Copiar respuestas</button><span id="copyMsg" role="status"></span></div>
+    <textarea class="report" id="report" readonly aria-label="Tus respuestas"></textarea>
+    <div class="confirm" id="resetBox"><button class="btn ghost" data-act="reset">Borrar mis respuestas y empezar de nuevo</button></div>`;
+  renderReport();
+}
+
+function renderNext() {
+  const el = document.getElementById("nextRow"); if (!el || S.sec >= N_PARTES) return;
+  const faltan = pendientes(S.sec);
+  const label = S.sec + 1 < N_PARTES ? "Siguiente: " + esc(UNIDAD.partes[S.sec + 1].nombre) : "Ir a la entrega";
+  el.innerHTML = `<button class="btn ${faltan ? "ghost" : ""} next" data-act="nav" data-i="${S.sec + 1}" ${faltan ? "disabled" : ""}>${label} →</button>`
+    + (faltan ? `<span class="next-msg">Para continuar, responde ${faltan === 1 ? "la pregunta que falta" : "las " + faltan + " preguntas que faltan"} en esta parte. Cualquier respuesta cuenta.</span>` : "");
+}
+function render() { if (!unlocked(S.sec)) S.sec = 0; renderTabs(); renderPart(); }
+
+/* ---------- eventos ---------- */
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  const act = b.dataset.act, q = QS[b.dataset.q];
+  if (act === "nav") { const to = Math.min(+b.dataset.i, N_PARTES); if (!unlocked(to)) return; S.sec = to; save(); render(); document.getElementById("part").scrollIntoView({ block: "start" }); window.scrollTo({ top: 0 }); }
+  else if (act === "check") { check(q); save(); rerender(q.id); }
+  else if (act === "ideas") {
+    const s = st(q.id);
+    if (!(s.texto || "").trim()) s.msg = "Escribe algo antes de revisar.";
+    else { s.msg = ""; s.revisado = s.texto; }
+    save(); rerender(q.id);
+  }
+  else if (act === "save") { saveOpen(q); save(); rerender(q.id); }
+  else if (act === "ch") {
+    const s = st(q.id), v = VERSOS[q.verso - 1]; let i = +b.dataset.i; s.msg = "";
+    if (i > 0 && ["rr", "ll", "ch"].includes((v[i - 1] + v[i]).toLowerCase())) i--;
+    if (i === firstL(v)) return;
+    s.b = s.b || []; const k = s.b.indexOf(i); if (k >= 0) s.b.splice(k, 1); else s.b.push(i);
+    save(); rerender(q.id);
+  }
+  else if (act === "acc") {
+    const s = st(q.id), i = +b.dataset.i; s.msg = ""; s.sel = s.sel || [];
+    const k = s.sel.indexOf(i); if (k >= 0) s.sel.splice(k, 1); else s.sel.push(i);
+    save(); rerender(q.id);
+  }
+  else if (act === "tok") {
+    const s = st(q.id); s.marcadas = s.marcadas || {}; s.msg = "";
+    if (b.dataset.k in s.marcadas) delete s.marcadas[b.dataset.k]; else s.marcadas[b.dataset.k] = "";
+    save(); rerender(q.id);
+  }
+  else if (act === "send") {
+    const msg = document.getElementById("sendMsg");
+    if (!S.nombre.trim()) { msg.textContent = "Escribe tu nombre completo en la parte superior."; nombre.focus(); return; }
+    if (!correoValido(S.correo)) { msg.textContent = "Revisa tu correo en la parte superior: debe tener la forma nombre@dominio.com, sin espacios ni acentos."; correo.focus(); return; }
+    const t = stats();
+    b.disabled = true; msg.textContent = "Enviando…";
+    fetch(ENVIO_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ unidad: UNIDAD.id, titulo: `${UNIDAD.autor}, «${UNIDAD.titulo}»`, curso: `${UNIDAD.curso} · ${UNIDAD.bloque}`, nombre: S.nombre.trim(), correo: S.correo.trim(), avance: `${t.hechas}/${t.total}`, informe: buildReport() }) })
+      .then(r => r.text())
+      .then(txt => {
+        let d; try { d = JSON.parse(txt); } catch (e) { throw new Error("servicio"); }
+        if (!d.ok) throw new Error(d.error === "correo" ? "correo" : "servidor");
+        S.enviado = new Date().toISOString(); save();
+        msg.textContent = `Enviado. Revisa tu correo (${S.correo.trim()}); si no lo ves en unos minutos, busca también en la carpeta de spam.`;
+      })
+      .catch(err => {
+        msg.textContent = err.message === "correo" ? "El servicio no aceptó tu correo. Revisa que esté bien escrito, sin espacios ni acentos."
+          : err.message === "servicio" ? "El servicio de envío no está disponible en este momento. Copia tus respuestas y entrégalas en Classroom, y avisa a tu profesor."
+          : "No se pudo enviar. Revisa tu conexión e inténtalo de nuevo; si sigue fallando, copia tus respuestas y entrégalas en Classroom.";
+      })
+      .finally(() => { b.disabled = false; });
+  }
+  else if (act === "copy") {
+    const r = document.getElementById("report"), msg = document.getElementById("copyMsg");
+    r.value = buildReport();
+    const fallback = () => { r.focus(); r.select(); msg.textContent = "Texto seleccionado: cópialo con Ctrl+C (o Cmd+C)."; };
+    try { navigator.clipboard.writeText(r.value).then(() => { msg.textContent = "Copiado. Ahora pégalo en el documento de Classroom."; }, fallback); } catch (err) { fallback(); }
+  }
+  else if (act === "reset") {
+    document.getElementById("resetBox").innerHTML = `<span>¿Seguro? Se borrarán todas tus respuestas en este navegador.</span><button class="btn danger" data-act="reset-yes">Sí, borrar</button><button class="btn ghost" data-act="nav" data-i="${N_PARTES}">Cancelar</button>`;
+  }
+  else if (act === "reset-yes") { S = { nombre: S.nombre, correo: S.correo, r: {}, sec: 0 }; save(); render(); }
+});
+document.addEventListener("input", e => {
+  const t = e.target, id = t.dataset.q; if (!id || t.readOnly) return;
+  const s = st(id), f = t.dataset.f;
+  if (f === "texto") s.texto = t.value;
+  else if (f === "def" || f === "sen") { s.items = s.items || {}; (s.items[t.dataset.i] = s.items[t.dataset.i] || {})[f] = t.value; }
+  else if (f === "nota") { s.marcadas[t.dataset.k] = t.value; }
+  save();
+});
+document.addEventListener("change", e => {
+  const t = e.target;
+  if (t.dataset.tipo) { st(t.dataset.tipo).tipo = t.value; save(); }
+  if (t.dataset.rima) { const s = st(t.dataset.rima); s.letras = s.letras || []; s.letras[+t.dataset.i] = t.value; save(); }
+});
+
+render();
+</script>
+
+</body>
+</html>

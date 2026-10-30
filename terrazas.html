@@ -1027,25 +1027,24 @@ function renderEntrega(el) {
     return `<tr><td>${i + 1}. ${esc(p.nombre)}</td><td>${d}/${tot}</td><td><span class="pill ${d === tot ? "ok" : "pend"}">${d === tot ? "Completa" : "Pendiente"}</span></td></tr>`; }).join("");
   const envio = ENVIO_URL ? `
     <section class="send" aria-labelledby="sendTitle">
-      <h3 id="sendTitle">1. Envía tus respuestas</h3>
+      <h3 id="sendTitle">Envía tus respuestas</h3>
       <p>Tu profesor recibirá el registro de tu entrega y tú recibirás una copia de tus respuestas en <strong id="sendTo">${esc((S.correo || "").trim() || "tu correo")}</strong>, para que la guardes como evidencia.</p>
+      <p>Al pulsar <strong>Enviar mis respuestas</strong>, tu actividad se toma en cuenta como entregada en Classroom, aunque ahí tarde en aparecer como entregada.</p>
       <div class="row"><button class="btn" data-act="send" id="sendBtn">Enviar mis respuestas</button><span id="sendMsg" role="status">${S.enviado ? "Última entrega: " + esc(new Date(S.enviado).toLocaleString("es-MX")) + "." : ""}</span></div>
     </section>
-    <h3 class="steps-title">2. Marca la tarea en Classroom</h3>` : "";
+    <h3 class="steps-title">Si quieres, guarda también una copia</h3>` : "";
   el.innerHTML = `<div class="part-head"><p class="eyebrow">Último paso</p><h2>Entrega</h2>
-      <p class="lead">${ENVIO_URL ? "Cuando termines, envía tus respuestas desde aquí y después marca la tarea como entregada en Classroom." : "Cuando termines, copia tus respuestas y entrégalas en la tarea de Classroom. Así tu profesor sabe que completaste la actividad y puede revisar tus respuestas abiertas."}</p></div>
+      <p class="lead">${ENVIO_URL ? "Cuando termines, envía tus respuestas desde aquí. Con eso tu actividad queda entregada." : "Cuando termines, copia tus respuestas y entrégalas en la tarea de Classroom. Así tu profesor sabe que completaste la actividad y puede revisar tus respuestas abiertas."}</p></div>
     <table class="summary"><thead><tr><th>Parte</th><th>Respondidas</th><th>Estado</th></tr></thead><tbody>${rows}</tbody></table>
     ${UNIDAD.avisoFinal ? `<aside class="extra"><p class="extra-eyebrow">Antes de entregar</p><p>${esc(UNIDAD.avisoFinal.texto)}</p><a class="video-link" href="${esc(UNIDAD.avisoFinal.enlace)}" target="_blank" rel="noopener"><span class="doc" aria-hidden="true"></span><span><strong>${esc(UNIDAD.avisoFinal.etiqueta)}</strong><br>Se abre en Google Drive</span></a></aside>` : ""}
     <div class="fb bad" id="nameWarn" ${S.nombre.trim() && correoValido(S.correo) ? "hidden" : ""}><p>Escribe tu nombre completo y tu correo en la parte superior antes de entregar.</p></div>
     ${envio}
-    <ol class="steps">
-      ${ENVIO_URL ? `<li>En Classroom, abre la tarea y pulsa <strong>Entregar</strong> (o <strong>Marcar como completada</strong>).</li>
-      <li>Si tu profesor te lo pide, pega también ahí tus respuestas: pulsa <strong>Copiar respuestas</strong>, elige <strong>Añadir o crear → Documentos</strong> y pégalas.</li>`
-      : `<li>Pulsa <strong>Copiar respuestas</strong>.</li>
+    ${ENVIO_URL ? `<p>Puedes copiar tus respuestas y pegarlas donde quieras; no hace falta para entregar.</p>` : `<ol class="steps">
+      <li>Pulsa <strong>Copiar respuestas</strong>.</li>
       <li>En Classroom, abre la tarea y elige <strong>Añadir o crear → Documentos</strong>.</li>
       <li>Pega tus respuestas en el documento y vuelve a la tarea.</li>
-      <li>Pulsa <strong>Entregar</strong>.</li>`}
-    </ol>
+      <li>Pulsa <strong>Entregar</strong>.</li>
+    </ol>`}
     <div class="row"><button class="btn ${ENVIO_URL ? "ghost" : ""}" data-act="copy">Copiar respuestas</button><span id="copyMsg" role="status"></span></div>
     <textarea class="report" id="report" readonly aria-label="Tus respuestas"></textarea>
     <div class="confirm" id="resetBox"><button class="btn ghost" data-act="reset">Borrar mis respuestas y empezar de nuevo</button></div>`;
@@ -1104,7 +1103,7 @@ document.addEventListener("click", e => {
         let d; try { d = JSON.parse(txt); } catch (e) { throw new Error("servicio"); }
         if (!d.ok) throw new Error(d.error === "correo" ? "correo" : "servidor");
         S.enviado = new Date().toISOString(); save();
-        msg.textContent = `Enviado. Revisa tu correo (${S.correo.trim()}); si no lo ves en unos minutos, busca también en la carpeta de spam.`;
+        msg.textContent = `Enviado: tu actividad cuenta como entregada. Revisa tu correo (${S.correo.trim()}); si no lo ves en unos minutos, busca también en la carpeta de spam.`;
       })
       .catch(err => {
         msg.textContent = err.message === "correo" ? "El servicio no aceptó tu correo. Revisa que esté bien escrito, sin espacios ni acentos."

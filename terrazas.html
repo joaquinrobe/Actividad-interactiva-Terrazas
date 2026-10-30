@@ -655,7 +655,7 @@ function head(q, tag) {
 function renderQ(q) {
   const s = st(q.id), done = !!s.done;
   if (q.tipo === "acepcion" && !q.enunciado) q.enunciado = `«${esc(q.forma)}» (v. ${q.verso}). Busca: <b>${esc(q.lema)}</b>`;
-  if (q.requiere && !isDone(QS[q.requiere])) return `<div class="q locked-q" id="q-${q.id}">${head(q, "")}<p class="locked-msg">Se abrirá cuando respondas la pregunta ${QS[q.requiere].n}.</p></div>`;
+  if (q.requiere && !isDone(QS[q.requiere])) return `<div class="q locked-q" id="q-${q.id}"><div class="q-head"><span class="q-num">${q.n}</span><p>Pregunta bloqueada</p></div><p class="locked-msg">Se abrirá cuando respondas la pregunta ${QS[q.requiere].n}.</p></div>`;
   let body = "";
   if (q.tipo === "opcion") {
     body = `<div class="opts">${q.opciones.map((o, i) => {
